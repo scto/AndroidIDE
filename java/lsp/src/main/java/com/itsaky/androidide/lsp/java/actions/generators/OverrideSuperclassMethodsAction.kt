@@ -29,6 +29,7 @@ import com.itsaky.androidide.lsp.java.actions.BaseJavaCodeAction
 import com.itsaky.androidide.lsp.java.compiler.CompileTask
 import com.itsaky.androidide.lsp.java.compiler.CompilerProvider
 import com.itsaky.androidide.lsp.java.parser.ParseTask
+import com.itsaky.androidide.lsp.java.providers.completion.KeywordCompletionProvider.Companion.PRIMITIVE_TYPE_KEYWORDS
 import com.itsaky.androidide.lsp.java.rewrite.AddImport
 import com.itsaky.androidide.lsp.java.utils.EditHelper
 import com.itsaky.androidide.lsp.java.utils.FindHelper
@@ -249,7 +250,7 @@ class OverrideSuperclassMethodsAction : BaseJavaCodeAction() {
         sb.append("\n")
 
         newImports.removeIf {
-          it.startsWith("java.lang.") || it.startsWith(filePackage) || fileImports.contains(it)
+          it.startsWith("java.lang.") || it.startsWith(filePackage) || PRIMITIVE_TYPE_KEYWORDS.contains(it) || fileImports.contains(it)
         }
 
         imports.addAll(newImports)
