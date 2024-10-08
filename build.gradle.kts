@@ -50,11 +50,7 @@ project.group = BuildConfig.packageName
 
 subprojects {
   if (project != rootProject) {
-    var group = project.parent!!.group
-    if (project.parent != rootProject) {
-      group = "${group}.${project.parent!!.name}"
-    }
-    project.group = group
+    project.group = "io.github.teixeira0x"
   }
 
   // Always load the F-Droid config
