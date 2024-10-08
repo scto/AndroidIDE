@@ -29,7 +29,7 @@ import com.itsaky.androidide.lsp.java.actions.BaseJavaCodeAction
 import com.itsaky.androidide.lsp.java.compiler.CompileTask
 import com.itsaky.androidide.lsp.java.compiler.CompilerProvider
 import com.itsaky.androidide.lsp.java.parser.ParseTask
-import com.itsaky.androidide.lsp.java.providers.completion.KeywordCompletionProvider.Companion.PRIMITIVE_TYPE_KEYWORDS
+import com.itsaky.androidide.lsp.java.providers.completion.PRIMITIVE_TYPE_KEYWORDS
 import com.itsaky.androidide.lsp.java.rewrite.AddImport
 import com.itsaky.androidide.lsp.java.utils.EditHelper
 import com.itsaky.androidide.lsp.java.utils.FindHelper
