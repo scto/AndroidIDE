@@ -103,7 +103,7 @@ class KeywordCompletionProvider(
         "extends",
         "implements"
       )
-    private val PRIMITIVE_TYPE_KEYWORDS =
+    val PRIMITIVE_TYPE_KEYWORDS =
       arrayOf(
         "byte",
         "short",
