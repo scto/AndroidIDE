@@ -54,7 +54,7 @@ tasks.create("generateBuildInfo") {
       candidates =
       arrayOf(
         "PACKAGE_NAME" to BuildConfig.packageName,
-        "MVN_GROUP_ID" to BuildConfig.packageName,
+        "MVN_GROUP_ID" to BuildConfig.mavenGroupId,
 
         "VERSION_NAME" to rootProject.version.toString(),
         "VERSION_NAME_SIMPLE" to rootProject.simpleVersionName,

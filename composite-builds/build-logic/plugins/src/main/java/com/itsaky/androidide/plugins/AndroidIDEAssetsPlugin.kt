@@ -68,7 +68,7 @@ class AndroidIDEAssetsPlugin : Plugin<Project> {
         // Init script generator
         val generateInitScript = tasks.register("generate${variantNameCapitalized}InitScript",
           GenerateInitScriptTask::class.java) {
-          mavenGroupId.set(BuildConfig.packageName)
+          mavenGroupId.set(BuildConfig.mavenGroupId)
           downloadVersion.set(this@run.downloadVersion)
         }
 

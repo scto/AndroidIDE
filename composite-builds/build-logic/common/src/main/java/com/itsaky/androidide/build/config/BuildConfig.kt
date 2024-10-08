@@ -27,6 +27,9 @@ object BuildConfig {
   /** AndroidIDE's package name. */
   const val packageName = "com.itsaky.androidide"
 
+  /** Custom mavenGroupId. */
+  const val mavenGroupId = "io.github.teixeira0x"
+
   /** The compile SDK version. */
   const val compileSdk = 34
 
