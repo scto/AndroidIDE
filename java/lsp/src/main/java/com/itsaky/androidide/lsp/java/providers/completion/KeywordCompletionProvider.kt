@@ -103,8 +103,20 @@ class KeywordCompletionProvider(
         "extends",
         "implements"
       )
+    private val PRIMITIVE_TYPE_KEYWORDS =
+      arrayOf(
+        "byte",
+        "short",
+        "int",
+        "long",
+        "float",
+        "double",
+        "boolean",
+        "char"
+      )
     private val CLASS_BODY_KEYWORDS =
       arrayOf(
+        *PRIMITIVE_TYPE_KEYWORDS,
         "public",
         "private",
         "protected",
@@ -117,17 +129,13 @@ class KeywordCompletionProvider(
         "class",
         "interface",
         "void",
-        "boolean",
-        "int",
-        "long",
-        "float",
-        "double",
         "true",
         "false",
         "null"
       )
     private val METHOD_BODY_KEYWORDS =
       arrayOf(
+        *PRIMITIVE_TYPE_KEYWORDS,
         "new",
         "assert",
         "try",
@@ -150,11 +158,6 @@ class KeywordCompletionProvider(
         "final",
         "class",
         "void",
-        "boolean",
-        "int",
-        "long",
-        "float",
-        "double",
         "synchronized",
         "true",
         "false",
