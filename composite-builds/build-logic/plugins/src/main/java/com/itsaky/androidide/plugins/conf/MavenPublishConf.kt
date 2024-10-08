@@ -101,7 +101,8 @@ fun Project.configureMavenPublish() {
       }
     }
 
-    coordinates(project.group.toString(), project.name, project.publishingVersion)
+    //coordinates(project.group.toString(), project.name, project.publishingVersion)
+    coordinates("io.github.teixeira0x", project.name, project.publishingVersion)
     publishToMavenCentral(host = S01)
     signAllPublications()
 
