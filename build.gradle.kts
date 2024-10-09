@@ -50,7 +50,7 @@ project.group = BuildConfig.packageName
 
 subprojects {
   if (project != rootProject) {
-    var group = "io.github.teixeira0x"
+    var group = BuildConfig.mavenGroupId
     if (project.parent != rootProject) {
       group = "${group}.${project.parent!!.name}"
     }
