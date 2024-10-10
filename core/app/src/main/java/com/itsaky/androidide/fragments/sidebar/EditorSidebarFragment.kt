@@ -23,6 +23,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.graphics.Insets
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
+import androidx.core.view.marginLeft
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMarginsRelative
 import androidx.core.view.updatePadding
