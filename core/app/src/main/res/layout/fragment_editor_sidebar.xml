@@ -35,7 +35,7 @@
 
   <com.google.android.material.navigationrail.NavigationRailView
     android:id="@+id/navigation"
-    android:layout_width="wrap_content"
+    android:layout_width="56dp"
     android:layout_height="0dp"
     app:headerLayout="@layout/layout_editor_sidebar_header"
     app:labelVisibilityMode="unlabeled"

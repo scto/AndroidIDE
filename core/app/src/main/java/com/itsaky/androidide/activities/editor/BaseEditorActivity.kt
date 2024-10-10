@@ -449,7 +449,6 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
     memoryUsageWatcher.stopWatching(false)
 
     this.isDestroying = isFinishing
-    getFileTreeFragment()?.saveTreeState()
   }
 
   override fun onResume() {
@@ -458,13 +457,6 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
 
     memoryUsageWatcher.listener = memoryUsageListener
     memoryUsageWatcher.startWatching()
-
-    try {
-      getFileTreeFragment()?.listProjectFiles()
-    } catch (th: Throwable) {
-      log.error("Failed to update files list", th)
-      flashError(string.msg_failed_list_files)
-    }
   }
 
   override fun onStop() {
@@ -576,15 +568,6 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
     newMaterialDialogBuilder(this).setPositiveButton(android.R.string.ok, null)
       .setTitle(string.title_first_build).setMessage(string.msg_first_build).setCancelable(false)
       .create().show()
-  }
-
-  open fun getFileTreeFragment(): FileTreeFragment? {
-    if (filesTreeFragment == null) {
-      filesTreeFragment = supportFragmentManager.findFragmentByTag(
-        FileTreeFragment.TAG
-      ) as FileTreeFragment?
-    }
-    return filesTreeFragment
   }
 
   fun doSetStatus(text: CharSequence, @GravityInt gravity: Int) {
