@@ -186,7 +186,6 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
   }
 
   private var isImeVisible = false
-  private var contentCardRealHeight: Int? = null
   private val editorSurfaceContainerBackground by lazy {
     resolveAttr(R.attr.colorSurfaceDim)
   }
@@ -739,7 +738,6 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
 
     val observer: OnGlobalLayoutListener = object : OnGlobalLayoutListener {
       override fun onGlobalLayout() {
-        contentCardRealHeight = binding.contentCard.height
         content.also {
           it.realContainer.pivotX = it.realContainer.width.toFloat() / 2f
           it.realContainer.pivotY =
