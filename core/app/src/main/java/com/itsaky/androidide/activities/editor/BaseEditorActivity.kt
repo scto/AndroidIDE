@@ -265,7 +265,7 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
 
   override fun onApplyWindowInsets(insets: WindowInsetsCompat) {
     super.onApplyWindowInsets(insets)
-    val height = contentCardRealHeight ?: return
+    val height = _binding?.swipeReveal?.height ?: return
     val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
     _binding?.content?.bottomSheet?.setImeVisible(imeInsets.bottom > 0)
