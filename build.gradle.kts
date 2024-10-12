@@ -46,7 +46,7 @@ buildscript {
 }
 
 // Root project has 'com.itsaky.androidide' as the group ID
-project.group = BuildConfig.packageName
+project.group = BuildConfig.mavenGroupId
 
 subprojects {
   if (project != rootProject) {

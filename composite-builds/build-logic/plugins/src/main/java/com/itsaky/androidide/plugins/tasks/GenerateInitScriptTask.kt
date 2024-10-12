@@ -53,7 +53,6 @@ abstract class GenerateInitScriptTask : DefaultTask() {
         """
       initscript {
           repositories {
-              
               // Always specify the snapshots repository first
               maven {
                   // Add snapshots repository for AndroidIDE CI builds
@@ -70,15 +69,16 @@ abstract class GenerateInitScriptTask : DefaultTask() {
           }
 
           dependencies {
-              classpath('${mavenGroupId.get()}:gradle-plugin:${downloadVersion.get()}') {
+              classpath 'com.itsaky.androidide:gradle-plugin:2.7.1-beta'
+              /*classpath('${mavenGroupId.get()}:gradle-plugin:${downloadVersion.get()}') {
                   setChanging(false)
-              }
+              }*/
           }
       }
       
       apply plugin: com.itsaky.androidide.gradle.AndroidIDEInitScriptPlugin
     """
-          .trimIndent()
+          .trimIndent().trim()
       )
     }
   }

@@ -180,7 +180,6 @@ public class IDELanguageClientImpl implements ILanguageClient {
     if (!params.getAsync()) {
       applyActionEdits(editor, action);
       if (editor != null) {
-        action.getCommand();
         editor.executeCommand(action.getCommand());
       }
       return;
