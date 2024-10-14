@@ -60,4 +60,10 @@ class IDELogFragment : LogViewFragment() {
     val logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger
     logger.detachAppender(lifecycleAwareAppender)
   }
+  
+  override fun clearOutput() {
+    lifecycleAwareAppender.pauseAppender = true
+    super.clearOutput()
+    lifecycleAwareAppender.pauseAppender = false
+  }
 }

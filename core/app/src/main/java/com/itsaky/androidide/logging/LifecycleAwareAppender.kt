@@ -38,6 +38,8 @@ class LifecycleAwareAppender @JvmOverloads constructor(
   private var currentState: Lifecycle.State? = null
   private val logLayout = IDELogFormatLayout()
 
+  var pauseAppender = false
+
   init {
     setName("LifecycleAwareAppender")
     logLayout.isOmitMessage = true
@@ -80,7 +82,7 @@ class LifecycleAwareAppender @JvmOverloads constructor(
   }
 
   override fun append(eventObject: ILoggingEvent?) {
-    if (eventObject == null || !isStarted) {
+    if (eventObject == null || !isStarted || pauseAppender) {
       return
     }
 
