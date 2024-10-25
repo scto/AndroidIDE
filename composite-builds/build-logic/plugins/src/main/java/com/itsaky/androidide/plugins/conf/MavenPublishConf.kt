@@ -103,7 +103,7 @@ fun Project.configureMavenPublish() {
 
     coordinates(project.group.toString(), project.name, project.publishingVersion)
     // publishToMavenCentral(host = S01)
-    publishToMavenCentral(host = SonatypeHost.DEFAULT)
+    publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
     if (plugins.hasPlugin("com.android.library")) {
