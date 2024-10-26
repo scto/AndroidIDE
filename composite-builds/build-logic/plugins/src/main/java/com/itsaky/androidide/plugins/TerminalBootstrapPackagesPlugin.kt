@@ -36,9 +36,9 @@ class TerminalBootstrapPackagesPlugin : Plugin<Project> {
      * The bootstrap packages, mapped with the CPU ABI as the key and the ZIP file's sha256sum as the value.
      */
     private val BOOTSTRAP_PACKAGES = mapOf(
-      "aarch64" to "68da03ed270d59cafcd37981b00583c713b42cb440adf03d1bf980f39a55181d",
-      "arm" to "f3d9f2da7338bd00b02a8df192bdc22ad431a5eef413cecf4cd78d7a54ffffbf",
-      "x86_64" to "6e4e50a206c3384c36f141b2496c1a7c69d30429e4e20268c51a84143530af67"
+      "aarch64" to "677e225717cf1642a8fc23894f0857e694344cda45ede4ace5de334180ce278b",
+      "arm" to "50024d392ad784dabc39f2b0f159e78fbd7247d76d438a4194fadac96448d6a0",
+      "x86_64" to "7e8a76a594005b38817a1fe6ff0f1293d2e4ca6a5bccdbb457a631fe27b98a55"
     )
 
     /**
@@ -47,7 +47,8 @@ class TerminalBootstrapPackagesPlugin : Plugin<Project> {
     private const val BOOTSTRAP_PACKAGES_VERSION = "16.12.2023"
 
     private const val PACKAGES_DOWNLOAD_URL =
-      "https://github.com/AndroidIDEOfficial/terminal-packages/releases/download/bootstrap-%1\$s/bootstrap-%2\$s.zip"
+      "https://github.com/Visual-Code-Space/terminal-packages/releases/download/bootstrap-%1\$s/bootstrap-%2\$s.zip"
+
   }
 
   override fun apply(target: Project) {
