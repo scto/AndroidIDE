@@ -36,7 +36,7 @@ import com.termux.shared.termux.shell.command.runner.terminal.TermuxSession
 import org.slf4j.LoggerFactory
 
 /**
- * @author Akash Yadav
+ * @author Akash Yadav, Felipe Teixeira
  */
 class TerminalActivity : TermuxActivity() {
 
@@ -50,6 +50,8 @@ class TerminalActivity : TermuxActivity() {
       field = value
       findViewById<View>(R.id.new_session_button)?.isEnabled = value
     }
+
+  private var idesetupSession: IdesetupSession? = null
 
   companion object {
 
@@ -90,7 +92,7 @@ class TerminalActivity : TermuxActivity() {
     sessionName: String?,
     workingDirectory: String?
   ) {
-    if (canAddNewSessions) {
+    if (canAddNewSessions && idesetupSession == null) {
       super.onCreateNewSession(isFailsafe, sessionName, workingDirectory)
     } else {
       flashError(R.string.msg_terminal_new_sessions_disabled)
@@ -123,6 +125,11 @@ class TerminalActivity : TermuxActivity() {
   }
 
   private fun addIdesetupSession(args: Array<String>) {
+    if (!canAddIdesetupSession()) {
+      log.warn("Failed to add idesetup session. there is already a session running.")
+      return
+    }
+
     val script = IdesetupSession.createScript(this) ?: run {
       log.error("Failed to add idesetup session. Cannot create script.")
       flashError(R.string.msg_cannot_create_terminal_session)
@@ -131,7 +138,7 @@ class TerminalActivity : TermuxActivity() {
 
     Log.d("IdeSetupConfig", "buildIdeSetupArguments: ${args.joinToString(separator = " ")}")
 
-    val session = IdesetupSession.wrap(termuxService.createTermuxSession(
+    val idesetupSession = IdesetupSession.wrap(termuxService.createTermuxSession(
       /* executablePath = */ script.absolutePath,
       /* arguments = */ args,
       /* stdin = */ null,
@@ -140,11 +147,17 @@ class TerminalActivity : TermuxActivity() {
       /* sessionName = */ "IDE setup"
     ), script)
 
-    session ?: run {
+    idesetupSession ?: run {
       flashError(R.string.msg_cannot_create_terminal_session)
       return
     }
 
-    termuxTerminalSessionClient.setCurrentSession(session.terminalSession)
+    termuxTerminalSessionClient.setCurrentSession(idesetupSession.terminalSession)
+
+    this.idesetupSession = idesetupSession
+  }
+
+  private fun canAddIdesetupSession(): Boolean {
+    return idesetupSession?.terminalSession?.isRunning() != true
   }
 }
