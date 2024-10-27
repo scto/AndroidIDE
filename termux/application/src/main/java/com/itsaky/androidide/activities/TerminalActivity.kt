@@ -36,7 +36,7 @@ import com.termux.shared.termux.shell.command.runner.terminal.TermuxSession
 import org.slf4j.LoggerFactory
 
 /**
- * @author Akash Yadav, Felipe Teixeira
+ * @author Akash Yadav
  */
 class TerminalActivity : TermuxActivity() {
 
@@ -50,8 +50,6 @@ class TerminalActivity : TermuxActivity() {
       field = value
       findViewById<View>(R.id.new_session_button)?.isEnabled = value
     }
-
-  private var idesetupSession: IdesetupSession? = null
 
   companion object {
 
@@ -92,7 +90,7 @@ class TerminalActivity : TermuxActivity() {
     sessionName: String?,
     workingDirectory: String?
   ) {
-    if (canAddNewSessions && idesetupSession == null) {
+    if (canAddNewSessions) {
       super.onCreateNewSession(isFailsafe, sessionName, workingDirectory)
     } else {
       flashError(R.string.msg_terminal_new_sessions_disabled)
@@ -125,11 +123,6 @@ class TerminalActivity : TermuxActivity() {
   }
 
   private fun addIdesetupSession(args: Array<String>) {
-    if (!canAddIdesetupSession()) {
-      log.warn("Failed to add idesetup session. there is already a session running.")
-      return
-    }
-
     val script = IdesetupSession.createScript(this) ?: run {
       log.error("Failed to add idesetup session. Cannot create script.")
       flashError(R.string.msg_cannot_create_terminal_session)
@@ -153,11 +146,5 @@ class TerminalActivity : TermuxActivity() {
     }
 
     termuxTerminalSessionClient.setCurrentSession(idesetupSession.terminalSession)
-
-    this.idesetupSession = idesetupSession
-  }
-
-  private fun canAddIdesetupSession(): Boolean {
-    return idesetupSession?.terminalSession?.isRunning() != true
   }
 }
