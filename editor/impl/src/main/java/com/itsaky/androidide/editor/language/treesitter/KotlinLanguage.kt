@@ -18,6 +18,8 @@
 package com.itsaky.androidide.editor.language.treesitter
 
 import android.content.Context
+import com.itsaky.androidide.editor.language.newline.TSBracketsHandler
+import com.itsaky.androidide.editor.language.newline.TSCStyleBracketsHandler
 import com.itsaky.androidide.editor.language.treesitter.TreeSitterLanguage.Factory
 import com.itsaky.androidide.treesitter.kotlin.TSLanguageKotlin
 import io.github.rosemoe.sora.lang.Language.INTERRUPTION_LEVEL_STRONG
@@ -39,5 +41,9 @@ open class KotlinLanguage(context: Context) :
 
   override fun getInterruptionLevel(): Int {
     return INTERRUPTION_LEVEL_STRONG
+  }
+
+  override fun createNewlineHandlers(): Array<TSBracketsHandler> {
+    return arrayOf(TSCStyleBracketsHandler(this))
   }
 }
