@@ -168,5 +168,5 @@ private fun ModuleTemplateBuilder.ktJvmTargetGroovy(): String =
 """
 
 private fun AndroidModuleTemplateBuilder.pluginsSrc(): String {
-  return libraries.plugins.joinToString("\n") { it.value() }
+  return plugins.joinToString("\n") { it.value() }
 }

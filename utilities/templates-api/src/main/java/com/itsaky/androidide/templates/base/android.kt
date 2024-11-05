@@ -19,9 +19,7 @@ package com.itsaky.androidide.templates.base
 
 import com.itsaky.androidide.templates.base.models.Plugin.Plugins
 
-/**
- * Configure Android plugins.
- */
+/** Configure Android plugins. */
 fun AndroidModuleTemplateBuilder.baseAndroidPlugins() {
   addPlugin(Plugins.AndroidPlugin)
   if (data.language == Kotlin) {

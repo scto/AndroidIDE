@@ -52,6 +52,15 @@ abstract class ModuleTemplateBuilder :
   val name: String
     get() = checkNotNull(_name) { "Name not set to module template" }
 
+  val platforms: Set<Dependency>
+    get() = libraries.platforms
+
+  val dependencies: Set<Dependency>
+    get() = libraries.dependencies
+
+  val plugins: Set<Plugin>
+    get() = libraries.plugins
+
   open fun RecipeExecutor.preConfig() {}
 
   open fun RecipeExecutor.postConfig() {}
@@ -196,7 +205,7 @@ abstract class ModuleTemplateBuilder :
   }
 
   @JvmOverloads
-  fun addPligin(plugin: Plugin) {
+  fun addPlugin(plugin: Plugin) {
     libraries.addPlugin(plugin)
   }
 

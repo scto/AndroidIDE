@@ -98,8 +98,8 @@ private fun ProjectTemplateBuilder.pluginsSrc(
 private fun ProjectTemplateBuilder.getDependencies(): HashSet<Dependency> {
   val dependencies = hashSetOf<Dependency>()
   modules.forEach { module ->
-    plugins.addAll(module.libraries.platforms)
-    plugins.addAll(module.libraries.dependencies)
+    dependencies.addAll(module.platforms)
+    dependencies.addAll(module.dependencies)
   }
 
   return dependencies
@@ -107,7 +107,7 @@ private fun ProjectTemplateBuilder.getDependencies(): HashSet<Dependency> {
 
 private fun ProjectTemplateBuilder.getPlugins(): HashSet<Plugin> {
   val plugins = hashSetOf<Plugin>()
-  modules.forEach { module -> plugins.addAll(module.libraries.plugins) }
+  modules.forEach { module -> plugins.addAll(module.plugins) }
 
   return plugins
 }

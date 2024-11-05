@@ -32,7 +32,7 @@ fun defaultDependency(
   artifact: String,
   version: String,
 ): Dependency {
-  return Dependency(Implementation, group, artifact, version)
+  return parseDependency("$group:$artifact:$version")
 }
 
 /**
