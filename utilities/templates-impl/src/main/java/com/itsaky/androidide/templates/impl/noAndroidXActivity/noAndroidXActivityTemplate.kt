@@ -31,9 +31,8 @@ import com.itsaky.androidide.templates.impl.baseProjectImpl
 fun noAndroidXActivityProject() = baseProjectImpl {
   templateName = R.string.template_no_AndroidX
   thumb = R.drawable.template_empty_noandroidx
-  val configNight = ConfigDescription().apply {
-    uiMode = ResTableConfig.UI_MODE.NIGHT_YES
-  }
+  val configNight =
+    ConfigDescription().apply { uiMode = ResTableConfig.UI_MODE.NIGHT_YES }
   defaultAppModule(addAndroidX = false) {
 
     // do not set a theme resource to the application
@@ -46,18 +45,32 @@ fun noAndroidXActivityProject() = baseProjectImpl {
         writeXmlResource("themes", VALUES, source = emptyValuesFile())
 
         // values-night
-        writeXmlResource("colors", VALUES, config = configNight,
-          source = emptyValuesFile())
-        writeXmlResource("themes", VALUES, config = configNight,
-          source = emptyValuesFile())
+        writeXmlResource(
+          "colors",
+          VALUES,
+          config = configNight,
+          source = emptyValuesFile(),
+        )
+        writeXmlResource(
+          "themes",
+          VALUES,
+          config = configNight,
+          source = emptyValuesFile(),
+        )
 
-        writeXmlResource("activity_main", LAYOUT,
-          source = noAndroidXActivityLayout())
+        writeXmlResource(
+          "activity_main",
+          LAYOUT,
+          source = noAndroidXActivityLayout(),
+        )
       }
 
       sources {
-        writeMainActivity(this, ktSrc = ::noAndroidXActivitySrcKt,
-          javaSrc = ::noAndroidXActivitySrcJava)
+        writeMainActivity(
+          this,
+          ktSrc = ::noAndroidXActivitySrcKt,
+          javaSrc = ::noAndroidXActivitySrcJava,
+        )
       }
     }
   }

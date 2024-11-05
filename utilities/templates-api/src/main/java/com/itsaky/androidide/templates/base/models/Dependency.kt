@@ -19,24 +19,33 @@ package com.itsaky.androidide.templates.base.models
 
 import com.itsaky.androidide.templates.base.models.DependencyConfiguration.DebugImplementation
 
-data class Dependency(val configuration: DependencyConfiguration,
-                      val group: String, val artifact: String,
-                      val version: String?
+data class Dependency(
+  val configuration: DependencyConfiguration,
+  val group: String,
+  val artifact: String,
+  val version: Version?,
 ) {
 
   fun value(): String {
     return """
-      ${configuration.configName}("${group}:${artifact}${optionalVersion()}")
-    """.trimIndent()
+      ${configuration.configName}(${libraryValue()})
+    """
+      .trimIndent()
   }
 
   fun platformValue(): String {
     return """
-      ${configuration.configName}(platform("${group}:${artifact}${optionalVersion()}"))
-    """.trimIndent()
+      ${configuration.configName}(platform(${libraryValue()}))
+    """
+      .trimIndent()
   }
 
-  private fun optionalVersion() = version?.let { ":${it}" } ?: ""
+  private fun libraryValue(): String {
+    return """
+      libs.${artifact.replace("-", ".")}
+    """
+      .trimIndent()
+  }
 
   object AndroidX {
 
@@ -53,55 +62,70 @@ data class Dependency(val configuration: DependencyConfiguration,
       parseDependency("androidx.constraintlayout:constraintlayout:2.1.4")
 
     @JvmStatic
-    val LifeCycle_LiveData = parseDependency(
-      "androidx.lifecycle:lifecycle-livedata:${lifecycleVersion}")
+    val LifeCycle_LiveData =
+      parseDependency(
+        "androidx.lifecycle:lifecycle-livedata:${lifecycleVersion}"
+      )
 
     @JvmStatic
-    val LifeCycle_LiveData_Ktx = parseDependency(
-      "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}")
+    val LifeCycle_LiveData_Ktx =
+      parseDependency(
+        "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}"
+      )
 
     @JvmStatic
-    val LifeCycle_ViewModel = parseDependency(
-      "androidx.lifecycle:lifecycle-viewmodel:${lifecycleVersion}")
+    val LifeCycle_ViewModel =
+      parseDependency(
+        "androidx.lifecycle:lifecycle-viewmodel:${lifecycleVersion}"
+      )
 
     @JvmStatic
-    val LifeCycle_ViewModel_Ktx = parseDependency(
-      "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}")
+    val LifeCycle_ViewModel_Ktx =
+      parseDependency(
+        "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}"
+      )
 
     @JvmStatic
-    val Navigation_Fragment = parseDependency(
-      "androidx.navigation:navigation-fragment:${navigationVersion}")
+    val Navigation_Fragment =
+      parseDependency(
+        "androidx.navigation:navigation-fragment:${navigationVersion}"
+      )
 
     @JvmStatic
     val Navigation_Ui =
       parseDependency("androidx.navigation:navigation-ui:${navigationVersion}")
 
     @JvmStatic
-    val Navigation_Fragment_Ktx = parseDependency(
-      "androidx.navigation:navigation-fragment-ktx:${navigationVersion}")
+    val Navigation_Fragment_Ktx =
+      parseDependency(
+        "androidx.navigation:navigation-fragment-ktx:${navigationVersion}"
+      )
 
     @JvmStatic
-    val Navigation_Ui_Ktx = parseDependency(
-      "androidx.navigation:navigation-ui-ktx:${navigationVersion}")
+    val Navigation_Ui_Ktx =
+      parseDependency(
+        "androidx.navigation:navigation-ui-ktx:${navigationVersion}"
+      )
 
     object Compose {
 
-      @JvmStatic
-      val Core_Ktx = parseDependency("androidx.core:core-ktx:1.8.0")
+      @JvmStatic val Core_Ktx = parseDependency("androidx.core:core-ktx:1.8.0")
 
       @JvmStatic
-      val LifeCycle_Runtime_Ktx = parseDependency(
-        "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+      val LifeCycle_Runtime_Ktx =
+        parseDependency("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
 
       @JvmStatic
       val Activity = parseDependency("androidx.activity:activity-compose:1.5.1")
 
       @JvmStatic
-      val BOM = parseDependency("androidx.compose:compose-bom:2022.10.00",
-        isPlatform = true)
+      val BOM =
+        parseDependency(
+          "androidx.compose:compose-bom:2022.10.00",
+          isPlatform = true,
+        )
 
-      @JvmStatic
-      val UI = parseDependency("androidx.compose.ui:ui")
+      @JvmStatic val UI = parseDependency("androidx.compose.ui:ui")
 
       @JvmStatic
       val UI_Graphics = parseDependency("androidx.compose.ui:ui-graphics")
@@ -114,13 +138,18 @@ data class Dependency(val configuration: DependencyConfiguration,
       val Material3 = parseDependency("androidx.compose.material3:material3")
 
       @JvmStatic
-      val UI_Tooling = parseDependency("androidx.compose.ui:ui-tooling",
-        configuration = DebugImplementation)
+      val UI_Tooling =
+        parseDependency(
+          "androidx.compose.ui:ui-tooling",
+          configuration = DebugImplementation,
+        )
 
       @JvmStatic
       val UI_Test_Manifest =
-        parseDependency("androidx.compose.ui:ui-test-manifest",
-          configuration = DebugImplementation)
+        parseDependency(
+          "androidx.compose.ui:ui-test-manifest",
+          configuration = DebugImplementation,
+        )
     }
   }
 

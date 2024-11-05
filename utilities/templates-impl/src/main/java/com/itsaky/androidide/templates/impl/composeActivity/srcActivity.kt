@@ -19,8 +19,8 @@ package com.itsaky.androidide.templates.impl.composeActivity
 
 import com.itsaky.androidide.templates.base.AndroidModuleTemplateBuilder
 
-fun AndroidModuleTemplateBuilder.composeActivitySrc()
-= """
+fun AndroidModuleTemplateBuilder.composeActivitySrc() =
+  """
 package ${data.packageName}
 
 import android.os.Bundle
@@ -63,4 +63,5 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
-""".trimIndent()
+"""
+    .trimIndent()

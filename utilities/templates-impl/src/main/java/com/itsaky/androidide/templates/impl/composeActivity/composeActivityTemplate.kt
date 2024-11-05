@@ -37,36 +37,46 @@ private fun composeLanguageParameter() = projectLanguageParameter {
 
 // Compose template is available only in Kotlin
 fun composeActivityProject() =
-  baseProjectImpl(language = composeLanguageParameter(),
-    projectVersionData = ProjectVersionData(kotlin = composeKotlinVersion)) {
-
+  baseProjectImpl(
+    language = composeLanguageParameter(),
+    projectVersionData = ProjectVersionData(kotlin = composeKotlinVersion),
+  ) {
     templateName = R.string.template_compose
     thumb = R.drawable.template_compose_empty_activity
 
     defaultAppModule(addAndroidX = false) {
-
       isComposeModule = true
 
       recipe = createRecipe {
-
-        require(
-          data.language == Kotlin) { "Compose activity requires Kotlin language" }
+        require(data.language == Kotlin) {
+          "Compose activity requires Kotlin language"
+        }
 
         composeDependencies()
 
-        res {
-          writeXmlResource("themes", VALUES, source = ::composeThemesXml)
-        }
+        res { writeXmlResource("themes", VALUES, source = ::composeThemesXml) }
 
         sources {
-          writeMainActivity(this, ktSrc = ::composeActivitySrc,
-            javaSrc = { "" })
-          writeKtSrc("${data.packageName}.ui.theme", "Color",
-            source = ::themeColorSrc)
-          writeKtSrc("${data.packageName}.ui.theme", "Theme",
-            source = ::themeThemeSrc)
-          writeKtSrc("${data.packageName}.ui.theme", "Type",
-            source = ::themeTypeSrc)
+          writeMainActivity(
+            this,
+            ktSrc = ::composeActivitySrc,
+            javaSrc = { "" },
+          )
+          writeKtSrc(
+            "${data.packageName}.ui.theme",
+            "Color",
+            source = ::themeColorSrc,
+          )
+          writeKtSrc(
+            "${data.packageName}.ui.theme",
+            "Theme",
+            source = ::themeThemeSrc,
+          )
+          writeKtSrc(
+            "${data.packageName}.ui.theme",
+            "Type",
+            source = ::themeTypeSrc,
+          )
         }
       }
     }

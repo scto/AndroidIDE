@@ -34,7 +34,8 @@ class NotificationsViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 }
-""".trim()
+"""
+    .trim()
 
 internal fun AndroidModuleTemplateBuilder.bottomNavModelNotificationsSrcJava() =
   """
@@ -57,4 +58,5 @@ public class NotificationsViewModel extends ViewModel {
         return mText;
     }
 }
-""".trim()
+"""
+    .trim()

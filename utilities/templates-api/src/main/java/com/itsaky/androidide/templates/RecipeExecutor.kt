@@ -28,26 +28,24 @@ import java.io.InputStream
 interface RecipeExecutor {
 
   /**
-   * Get the project template data. This is available only while creating modules in an existing project.
+   * Get the project template data. This is available only while creating
+   * modules in an existing project.
    *
    * @return The project template data or `null` if the not available.
    */
   fun projectData(): ProjectTemplateData? = null
 
   /**
-   * @return The [ProjectTemplateData] if available, throws [IllegalStateException] otherwise.
+   * @return The [ProjectTemplateData] if available, throws
+   *   [IllegalStateException] otherwise.
    * @see projectData
    */
   fun requireProjectData(): ProjectTemplateData = checkNotNull(projectData())
 
-  /**
-   * Copy the [source] file to [dest].
-   */
+  /** Copy the [source] file to [dest]. */
   fun copy(source: File, dest: File)
 
-  /**
-   * Save the [source] to [dest].
-   */
+  /** Save the [source] to [dest]. */
   fun save(source: String, dest: File)
 
   /**

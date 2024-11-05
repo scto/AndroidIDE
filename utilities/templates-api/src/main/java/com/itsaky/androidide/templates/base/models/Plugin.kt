@@ -17,11 +17,30 @@
 
 package com.itsaky.androidide.templates.base.models
 
-enum class DependencyConfiguration(val configName: String) {
-  Api("api"),
-  ApiOnly("apiOnly"),
-  Implementation("implementation"),
-  DebugImplementation("debugImplementation"),
-  Runtime("runtime"),
-  RuntimeOnly("runtimeOnly"),
+import com.itsaky.androidide.templates.ANDROID_GRADLE_PLUGIN_VERSION
+import com.itsaky.androidide.templates.KOTLIN_VERSION
+
+data class Plugin(val name: String, val id: String, val version: Version) {
+
+  fun value(): String {
+    return """
+      alias(libs.plugin.${name.replace("-", ".")})
+    """
+      .trimIndent()
+  }
+
+  object Plugins {
+
+    @JvmStatic
+    val AndroidPlugin =
+      parsePlugin("com.android.application", ANDROID_GRADLE_PLUGIN_VERSION)
+
+    @JvmStatic
+    val AndroidLibraryPlugin =
+      parsePlugin("com.android.library", ANDROID_GRADLE_PLUGIN_VERSION)
+
+    @JvmStatic
+    val KotlinAndroidPlugin =
+      parsePlugin("org.jetbrains.kotlin.android", KOTLIN_VERSION)
+  }
 }

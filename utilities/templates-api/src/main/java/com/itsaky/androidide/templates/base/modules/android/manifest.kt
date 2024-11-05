@@ -24,15 +24,20 @@ import org.eclipse.lemminx.dom.builder.IndentedXmlConfigurator
  *
  * @param name The name of the activity (for `android:name` attribute).
  * @param isExported Sets the `android:exported` attribute.
- * @param isLauncher Adds the `intent-filter` for setting this activity as the launcher activity.
- * @param configureAttrs Function for configuring additional attributes for this activity.
- * @param configureInside Function for configuring additional elements inside this activity tag.
+ * @param isLauncher Adds the `intent-filter` for setting this activity as the
+ *   launcher activity.
+ * @param configureAttrs Function for configuring additional attributes for this
+ *   activity.
+ * @param configureInside Function for configuring additional elements inside
+ *   this activity tag.
  * @author Akash Yadav
  */
-data class ManifestActivity(val name: String, val isExported: Boolean,
-                            val isLauncher: Boolean = false,
-                            val configureAttrs: IndentedXmlConfigurator? = null,
-                            val configureInside: IndentedXmlConfigurator? = null
+data class ManifestActivity(
+  val name: String,
+  val isExported: Boolean,
+  val isLauncher: Boolean = false,
+  val configureAttrs: IndentedXmlConfigurator? = null,
+  val configureInside: IndentedXmlConfigurator? = null,
 )
 
 /**

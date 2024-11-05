@@ -19,7 +19,8 @@ package com.itsaky.androidide.templates.impl.tabbedActivity
 
 import com.itsaky.androidide.templates.base.AndroidModuleTemplateBuilder
 
-internal fun AndroidModuleTemplateBuilder.tabbedPageViewModelSrcKt() = """
+internal fun AndroidModuleTemplateBuilder.tabbedPageViewModelSrcKt() =
+  """
 package ${data.packageName}.ui.main
 
 import androidx.lifecycle.LiveData
@@ -39,9 +40,11 @@ class PageViewModel : ViewModel() {
         _index.value = index
     }
 }
-""".trim()
+"""
+    .trim()
 
-internal fun AndroidModuleTemplateBuilder.tabbedPageViewModelSrcJava() = """
+internal fun AndroidModuleTemplateBuilder.tabbedPageViewModelSrcJava() =
+  """
 package ${data.packageName}.ui.main;
 
 import androidx.arch.core.util.Function;
@@ -68,4 +71,5 @@ public class PageViewModel extends ViewModel {
         return mText;
     }
 }
-""".trim()
+"""
+    .trim()

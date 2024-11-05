@@ -28,11 +28,12 @@ data class ProjectTemplateRecipeResultImpl(
   override val data: ProjectTemplateData
 ) : ProjectTemplateRecipeResult
 
-data class ModuleTemplateRecipeResultImpl(override val data: ModuleTemplateData
+data class ModuleTemplateRecipeResultImpl(
+  override val data: ModuleTemplateData
 ) : ModuleTemplateRecipeResult
 
-
-internal fun ProjectTemplateBuilder.recipeResult(): ProjectTemplateRecipeResult {
+internal fun ProjectTemplateBuilder.recipeResult():
+  ProjectTemplateRecipeResult {
   return ProjectTemplateRecipeResultImpl(data)
 }
 

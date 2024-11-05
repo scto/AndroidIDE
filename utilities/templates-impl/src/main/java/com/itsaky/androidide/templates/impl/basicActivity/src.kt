@@ -23,7 +23,8 @@ import com.itsaky.androidide.templates.impl.base.materialAppBar
 import com.itsaky.androidide.templates.impl.base.materialFab
 import com.itsaky.androidide.templates.impl.indentToLevel
 
-internal fun AndroidModuleTemplateBuilder.basicActivitySrcJava() = """
+internal fun AndroidModuleTemplateBuilder.basicActivitySrcJava() =
+  """
 package ${data.packageName};
 
 import android.os.Bundle;
@@ -32,9 +33,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import ${data.packageName}.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-	
+
 	  private ActivityMainBinding binding;
-	
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
         this.binding = null;
     }
 }
-""".trim()
+"""
+    .trim()
 
-internal fun AndroidModuleTemplateBuilder.basicActivitySrcKt() = """
+internal fun AndroidModuleTemplateBuilder.basicActivitySrcKt() =
+  """
 package ${data.packageName}
 
 import android.os.Bundle
@@ -88,9 +91,11 @@ public class MainActivity : AppCompatActivity() {
         _binding = null
     }
 }
-  """.trim()
+  """
+    .trim()
 
-internal fun basicActivityLayout() = """
+internal fun basicActivityLayout() =
+  """
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -106,6 +111,7 @@ internal fun basicActivityLayout() = """
     ${materialFab().indentToLevel(1)}
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-""".trim()
+"""
+    .trim()
 
 internal fun basicActivityContent() = baseLayoutContentMain()

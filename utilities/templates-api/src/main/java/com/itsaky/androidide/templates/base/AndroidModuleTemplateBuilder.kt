@@ -43,23 +43,21 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
   val manifest = AndroidManifestBuilder()
   val res = AndroidModuleResManager()
 
-  /**
-   * Return the file path to `AndroidManifest.xml`.
-   */
+  /** Return the file path to `AndroidManifest.xml`. */
   fun manifestFile(): File {
-    return File(srcFolder(SrcSet.Main),
-      ANDROID_MANIFEST_XML).also { it.parentFile!!.mkdirs() }
+    return File(srcFolder(SrcSet.Main), ANDROID_MANIFEST_XML).also {
+      it.parentFile!!.mkdirs()
+    }
   }
 
-  /**
-   * Configure the properties for `AndroidManifest.xml` file.
-   */
+  /** Configure the properties for `AndroidManifest.xml` file. */
   inline fun manifest(crossinline block: AndroidManifestBuilder.() -> Unit) {
     manifest.apply(block)
   }
 
   /**
-   * Get the Android `res` directory for [main][SrcSet.Main] source set in this module.
+   * Get the Android `res` directory for [main][SrcSet.Main] source set in this
+   * module.
    *
    * @return The `res` directory for the [main][SrcSet.Main] source set.
    */
@@ -68,7 +66,8 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
   }
 
   /**
-   * Get the Android `res` directory for the given [source set][srcSet] in this module.
+   * Get the Android `res` directory for the given [source set][srcSet] in this
+   * module.
    *
    * @return The `res` directory.
    */
@@ -81,13 +80,13 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
    *
    * @param configure Function to configure the resources.
    */
-  inline fun RecipeExecutor.res(crossinline configure: AndroidModuleResManager.() -> Unit) {
+  inline fun RecipeExecutor.res(
+    crossinline configure: AndroidModuleResManager.() -> Unit
+  ) {
     res.apply(configure)
   }
 
-  /**
-   * Copy the default resources (without `values` directory) to this module.
-   */
+  /** Copy the default resources (without `values` directory) to this module. */
   fun RecipeExecutor.copyDefaultRes() {
     copyAssetsRecursively(baseAsset("res"), mainResDir())
   }
@@ -97,12 +96,11 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
    *
    * @param name The name of the class.
    */
-  inline fun RecipeExecutor.createActivity(name: String = "MainActivity",
-                                    crossinline configure: TypeSpec.Builder.() -> Unit
+  inline fun RecipeExecutor.createActivity(
+    name: String = "MainActivity",
+    crossinline configure: TypeSpec.Builder.() -> Unit,
   ) {
-    sources {
-      createClass(data.packageName, name, configure)
-    }
+    sources { createClass(data.packageName, name, configure) }
   }
 
   override fun baseAsset(path: String): String {
@@ -124,9 +122,7 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
     // Write .gitignore
     gitignore()
 
-    manifest.apply {
-      generate(manifestFile())
-    }
+    manifest.apply { generate(manifestFile()) }
 
     res {
       data.appName?.let { putStringRes(manifest.appLabelRes, it) }
@@ -134,9 +130,7 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
       if (strings.isNotEmpty()) {
         createValuesResource("strings") {
           linefeed()
-          strings.forEach { (name, value) ->
-            stringRes(name, value)
-          }
+          strings.forEach { (name, value) -> stringRes(name, value) }
           linefeed()
         }
       }
@@ -147,9 +141,7 @@ class AndroidModuleTemplateBuilder : ModuleTemplateBuilder() {
     save(buildGradleSrc(isComposeModule), buildGradleFile())
   }
 
-  /**
-   * Writes the `.gitignore` file in the mdoule directory.
-   */
+  /** Writes the `.gitignore` file in the mdoule directory. */
   fun RecipeExecutor.gitignore() {
     val gitignore = File(data.projectDir, ".gitignore")
     save(androidGitignoreSrc(), gitignore)

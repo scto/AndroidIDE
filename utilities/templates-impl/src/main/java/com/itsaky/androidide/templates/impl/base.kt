@@ -34,22 +34,23 @@ import com.itsaky.androidide.templates.projectLanguageParameter
 import com.itsaky.androidide.templates.projectNameParameter
 import com.itsaky.androidide.templates.useKtsParameter
 
-/**
- * Indents the given string for the given [indentation level][level].
- */
+/** Indents the given string for the given [indentation level][level]. */
 fun String.indentToLevel(level: Int): String {
   val lines = split(Regex("[\r\n]"))
-  return StringBuilder().apply {
-    for (line in lines) {
-      append(line)
-      append(" ".repeat(level * 4))
+  return StringBuilder()
+    .apply {
+      for (line in lines) {
+        append(line)
+        append(" ".repeat(level * 4))
+      }
     }
-  }.toString()
+    .toString()
 }
 
 @Suppress("UnusedReceiverParameter")
-internal fun AndroidModuleTemplateBuilder.templateAsset(name: String,
-                                                        path: String
+internal fun AndroidModuleTemplateBuilder.templateAsset(
+  name: String,
+  path: String,
 ): String {
   return "templates/${name}/${path}"
 }
@@ -61,11 +62,16 @@ internal inline fun baseProjectImpl(
   minSdk: EnumParameter<Sdk> = minSdkParameter(),
   language: EnumParameter<Language> = projectLanguageParameter(),
   projectVersionData: ProjectVersionData = ProjectVersionData(),
-  crossinline block: ProjectTemplateBuilder.() -> Unit
+  crossinline block: ProjectTemplateBuilder.() -> Unit,
 ): ProjectTemplate =
-  baseProject(projectName = projectName, packageName = packageName,
-    useKts = useKts, minSdk = minSdk, language = language,
-    projectVersionData = projectVersionData) {
+  baseProject(
+    projectName = projectName,
+    packageName = packageName,
+    useKts = useKts,
+    minSdk = minSdk,
+    language = language,
+    projectVersionData = projectVersionData,
+  ) {
     block()
 
     // make sure we return a proper result

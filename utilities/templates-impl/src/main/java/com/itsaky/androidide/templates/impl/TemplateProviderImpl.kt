@@ -46,7 +46,7 @@ class TemplateProviderImpl : ITemplateProvider {
   }
 
   private fun templates() =
-    //@formatter:off
+    // @formatter:off
     arrayOf(
       noActivityProjectTemplate(),
       emptyActivityProject(),
@@ -55,7 +55,7 @@ class TemplateProviderImpl : ITemplateProvider {
       bottomNavActivityProject(),
       tabbedActivityProject(),
       noAndroidXActivityProject(),
-      composeActivityProject()
+      composeActivityProject(),
     )
 
   private fun initializeTemplates() {
@@ -63,7 +63,8 @@ class TemplateProviderImpl : ITemplateProvider {
       templates[template.templateId] = template
     }
   }
-  //@formatter:on
+
+  // @formatter:on
 
   override fun getTemplates(): List<Template<*>> {
     return ImmutableList.copyOf(templates.values)

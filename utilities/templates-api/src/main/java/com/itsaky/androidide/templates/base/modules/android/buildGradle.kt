@@ -18,23 +18,17 @@
 package com.itsaky.androidide.templates.base.modules.android
 
 import com.itsaky.androidide.templates.Language.Kotlin
-import com.itsaky.androidide.templates.ModuleType
 import com.itsaky.androidide.templates.base.AndroidModuleTemplateBuilder
 import com.itsaky.androidide.templates.base.ModuleTemplateBuilder
 import com.itsaky.androidide.templates.base.modules.dependencies
 
 private const val compose_kotlinCompilerExtensionVersion = "1.3.2"
 
-private val AndroidModuleTemplateBuilder.androidPlugin: String
-  get() {
-    return if (data.type == ModuleType.AndroidLibrary) "com.android.library"
-    else "com.android.application"
-  }
-
-fun AndroidModuleTemplateBuilder.buildGradleSrc(isComposeModule: Boolean
+fun AndroidModuleTemplateBuilder.buildGradleSrc(
+  isComposeModule: Boolean
 ): String {
-  return if (data.useKts) buildGradleSrcKts(
-    isComposeModule) else buildGradleSrcGroovy(isComposeModule)
+  return if (data.useKts) buildGradleSrcKts(isComposeModule)
+  else buildGradleSrcGroovy(isComposeModule)
 }
 
 private fun AndroidModuleTemplateBuilder.buildGradleSrcKts(
@@ -42,45 +36,41 @@ private fun AndroidModuleTemplateBuilder.buildGradleSrcKts(
 ): String {
   return """
 plugins {
-    id("$androidPlugin")
-    ${ktPlugin()}
+    ${pluginsSrc()}
 }
 
 android {
     namespace = "${data.packageName}"
     compileSdk = ${data.versions.compileSdk.api}
-    
+
     defaultConfig {
         applicationId = "${data.packageName}"
         minSdk = ${data.versions.minSdk.api}
         targetSdk = ${data.versions.targetSdk.api}
         versionCode = 1
         versionName = "1.0"
-        
+
         vectorDrawables { 
             useSupportLibrary = true
         }
     }
-    
     compileOptions {
         sourceCompatibility = ${data.versions.javaSource()}
         targetCompatibility = ${data.versions.javaTarget()}
     }
-
+    ${ktJvmTarget()}
     buildTypes {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-
     buildFeatures {
         ${if (!isComposeModule) "viewBinding = true" else ""}
         ${if (isComposeModule) "compose = true" else ""}
     }
     ${if(isComposeModule) composeConfigKts() else ""}
 }
-${ktJvmTarget()}
 ${dependencies()}
 """
 }
@@ -90,51 +80,47 @@ private fun AndroidModuleTemplateBuilder.buildGradleSrcGroovy(
 ): String {
   return """
 plugins {
-    id '$androidPlugin'
-    ${ktPlugin()}
+    ${pluginsSrc()}
 }
 
 android {
     namespace '${data.packageName}'
     compileSdk ${data.versions.compileSdk.api}
-    
+
     defaultConfig {
         applicationId "${data.packageName}"
         minSdk ${data.versions.minSdk.api}
         targetSdk ${data.versions.targetSdk.api}
         versionCode 1
         versionName "1.0"
-        
+
         vectorDrawables { 
             useSupportLibrary true
         }
     }
-
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility ${data.versions.javaSource()}
         targetCompatibility ${data.versions.javaTarget()}
     }
-
+    ${ktJvmTarget()}
     buildFeatures {
         ${if (!isComposeModule) "viewBinding true" else ""}
         ${if (isComposeModule) "compose true" else ""}
     }
     ${if(isComposeModule) composeConfigGroovy() else ""}
 }
-${ktJvmTarget()}
 ${dependencies()}
 """
 }
 
-fun composeConfigGroovy(): String
-= """
+fun composeConfigGroovy(): String =
+  """
     composeOptions {
         kotlinCompilerExtensionVersion '$compose_kotlinCompilerExtensionVersion'
     }
@@ -143,10 +129,11 @@ fun composeConfigGroovy(): String
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-""".trim()
+"""
+    .trim()
 
-fun composeConfigKts(): String
-  = """
+fun composeConfigKts(): String =
+  """
     composeOptions {
         kotlinCompilerExtensionVersion = "$compose_kotlinCompilerExtensionVersion"
     }
@@ -155,7 +142,8 @@ fun composeConfigKts(): String
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-""".trim()
+"""
+    .trim()
 
 private fun ModuleTemplateBuilder.ktJvmTarget(): String {
   if (data.language != Kotlin) {
@@ -165,36 +153,20 @@ private fun ModuleTemplateBuilder.ktJvmTarget(): String {
   return if (data.useKts) ktJvmTargetKts() else ktJvmTargetGroovy()
 }
 
-private fun ModuleTemplateBuilder.ktJvmTargetKts(): String {
-  return """
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "${data.versions.javaTarget}"
-}
+private fun ModuleTemplateBuilder.ktJvmTargetKts(): String =
+  """
+    kotlinOptions {
+        jvmTarget = "${data.versions.javaTarget}"
+    }
 """
-}
 
-private fun ModuleTemplateBuilder.ktJvmTargetGroovy(): String {
-  return """
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-  kotlinOptions {
-    jvmTarget = "${data.versions.javaTarget}"
-  }
-}
+private fun ModuleTemplateBuilder.ktJvmTargetGroovy(): String =
+  """
+    kotlinOptions {
+        jvmTarget = '${data.versions.javaTarget}'
+    }
 """
-}
 
-private fun AndroidModuleTemplateBuilder.ktPlugin(): String {
-  if (data.language != Kotlin) {
-    return ""
-  }
-
-  return if (data.useKts) ktPluginKts() else ktPluginGroovy()
-}
-
-private fun ktPluginKts(): String {
-  return """id("kotlin-android")"""
-}
-
-private fun ktPluginGroovy(): String {
-  return "id 'kotlin-android'"
+private fun AndroidModuleTemplateBuilder.pluginsSrc(): String {
+  return libraries.plugins.joinToString("\n") { it.value() }
 }

@@ -17,47 +17,22 @@
 
 package com.itsaky.androidide.templates.base.root
 
-import com.itsaky.androidide.templates.Language
 import com.itsaky.androidide.templates.base.ProjectTemplateBuilder
+import com.itsaky.androidide.templates.base.models.Plugin
 
-internal fun ProjectTemplateBuilder.buildGradleSrcKts(): String {
-  return """
-    // Top-level build file where you can add configuration options common to all sub-projects/modules.
-    plugins {
-        id("com.android.application") version "${data.version.gradlePlugin}" apply false
-        id("com.android.library") version "${data.version.gradlePlugin}" apply false
-        ${ktPlugin()}     
-    }
-
-    tasks.register<Delete>("clean") {
-        delete(rootProject.buildDir)
-    }
-  """.trimIndent()
+internal fun ProjectTemplateBuilder.buildGradleSrc() =
+  """
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    ${pluginsSrc()}
 }
+"""
+    .trimIndent()
 
-internal fun ProjectTemplateBuilder.buildGradleSrcGroovy(): String {
-  return """
-    // Top-level build file where you can add configuration options common to all sub-projects/modules.
-    plugins {
-        id 'com.android.application' version '${data.version.gradlePlugin}' apply false
-        id 'com.android.library' version '${data.version.gradlePlugin}' apply false
-        ${ktPlugin()}     
-    }
+private fun ProjectTemplateBuilder.pluginsSrc(): String {
+  val plugins: HashSet<Plugin> = hashSetOf()
 
-    task clean(type: Delete) {
-        delete rootProject.buildDir
-    }
-  """.trimIndent()
-}
+  modules.forEach { module -> plugins.addAll(module.libraries.plugins) }
 
-private fun ProjectTemplateBuilder.ktPlugin() = if (data.language == Language.Kotlin) {
-  if (data.useKts) ktPluginKts() else ktPluginGroovy()
-} else ""
-
-private fun ProjectTemplateBuilder.ktPluginKts(): String {
-  return """id("org.jetbrains.kotlin.android") version "${data.version.kotlin}" apply false"""
-}
-
-private fun ProjectTemplateBuilder.ktPluginGroovy(): String {
-  return "id 'org.jetbrains.kotlin.android' version '${data.version.kotlin}' apply false"
+  return plugins.joinToString("\n") { it.value() }
 }

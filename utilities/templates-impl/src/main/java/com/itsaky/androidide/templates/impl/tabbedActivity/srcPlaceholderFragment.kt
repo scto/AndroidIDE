@@ -19,7 +19,8 @@ package com.itsaky.androidide.templates.impl.tabbedActivity
 
 import com.itsaky.androidide.templates.base.AndroidModuleTemplateBuilder
 
-internal fun AndroidModuleTemplateBuilder.tabbedPlaceholderFragmentSrcKt() = """
+internal fun AndroidModuleTemplateBuilder.tabbedPlaceholderFragmentSrcKt() =
+  """
 package ${data.packageName}.ui.main
 
 import android.os.Bundle
@@ -93,7 +94,8 @@ class PlaceholderFragment : Fragment() {
         _binding = null
     }
 }
-""".trim()
+"""
+    .trim()
 
 internal fun AndroidModuleTemplateBuilder.tabbedPlaceholderFragmentSrcJava() =
   """
@@ -167,4 +169,5 @@ public class PlaceholderFragment extends Fragment {
         binding = null;
     }
 }
-""".trim()
+"""
+    .trim()

@@ -53,94 +53,120 @@ import com.itsaky.androidide.utils.AndroidUtils
 import com.itsaky.androidide.utils.Environment
 import java.io.File
 
-typealias AndroidModuleTemplateConfigurator = AndroidModuleTemplateBuilder.() -> Unit
+typealias AndroidModuleTemplateConfigurator =
+  AndroidModuleTemplateBuilder.() -> Unit
 
 /**
  * Setup base files for project templates.
  *
  * @param block Function to configure the template.
  */
-inline fun baseProject(projectName: StringParameter = projectNameParameter(),
+inline fun baseProject(
+  projectName: StringParameter = projectNameParameter(),
   packageName: StringParameter = packageNameParameter(),
   useKts: BooleanParameter = useKtsParameter(),
   minSdk: EnumParameter<Sdk> = minSdkParameter(),
   language: EnumParameter<Language> = projectLanguageParameter(),
   projectVersionData: ProjectVersionData = ProjectVersionData(),
-  crossinline block: ProjectTemplateBuilder.() -> Unit
+  crossinline block: ProjectTemplateBuilder.() -> Unit,
 ): ProjectTemplate {
-  return ProjectTemplateBuilder().apply {
+  return ProjectTemplateBuilder()
+    .apply {
 
-    // When project name is changed, change the package name accordingly
-    projectName.observe { name ->
-      val newPackage =
-        AndroidUtils.appNameToPackageName(name.value, packageName.value)
-      packageName.setValue(newPackage)
-    }
-
-    Environment.mkdirIfNotExits(Environment.PROJECTS_DIR)
-
-    val saveLocation = stringParameter {
-      name = R.string.wizard_save_location
-      default = Environment.PROJECTS_DIR.absolutePath
-      endIcon = { R.drawable.ic_folder }
-      constraints = listOf(NONEMPTY, DIRECTORY, EXISTS)
-    }
-
-    projectName.doBeforeCreateView {
-      it.setValue(getNewProjectName(saveLocation.value, projectName.value))
-    }
-
-    widgets(TextFieldWidget(projectName), TextFieldWidget(packageName),
-      TextFieldWidget(saveLocation), SpinnerWidget(language),
-      SpinnerWidget(minSdk), CheckBoxWidget(useKts))
-
-    // Setup the required properties before executing the recipe
-    preRecipe = {
-      this@apply._executor = this
-
-      this@apply._data = ProjectTemplateData(projectName.value,
-        File(saveLocation.value, projectName.value), projectVersionData,
-        language = language.value, useKts = useKts.value)
-
-      if (data.projectDir.exists() && data.projectDir.listFiles()
-          ?.isNotEmpty() == true
-      ) {
-        throw IllegalArgumentException("Project directory already exists")
+      // When project name is changed, change the package name accordingly
+      projectName.observe { name ->
+        val newPackage =
+          AndroidUtils.appNameToPackageName(name.value, packageName.value)
+        packageName.setValue(newPackage)
       }
 
-      setDefaultModuleData(
-        ModuleTemplateData(":app", appName = data.name, packageName.value,
-          data.moduleNameToDir(":app"), type = AndroidApp,
-          language = language.value, minSdk = minSdk.value,
-          useKts = data.useKts))
+      Environment.mkdirIfNotExits(Environment.PROJECTS_DIR)
+
+      val saveLocation = stringParameter {
+        name = R.string.wizard_save_location
+        default = Environment.PROJECTS_DIR.absolutePath
+        endIcon = { R.drawable.ic_folder }
+        constraints = listOf(NONEMPTY, DIRECTORY, EXISTS)
+      }
+
+      projectName.doBeforeCreateView {
+        it.setValue(getNewProjectName(saveLocation.value, projectName.value))
+      }
+
+      widgets(
+        TextFieldWidget(projectName),
+        TextFieldWidget(packageName),
+        TextFieldWidget(saveLocation),
+        SpinnerWidget(language),
+        SpinnerWidget(minSdk),
+        CheckBoxWidget(useKts),
+      )
+
+      // Setup the required properties before executing the recipe
+      preRecipe = {
+        this@apply._executor = this
+
+        this@apply._data =
+          ProjectTemplateData(
+            projectName.value,
+            File(saveLocation.value, projectName.value),
+            projectVersionData,
+            language = language.value,
+            useKts = useKts.value,
+          )
+
+        if (
+          data.projectDir.exists() &&
+            data.projectDir.listFiles()?.isNotEmpty() == true
+        ) {
+          throw IllegalArgumentException("Project directory already exists")
+        }
+
+        setDefaultModuleData(
+          ModuleTemplateData(
+            ":app",
+            appName = data.name,
+            packageName.value,
+            data.moduleNameToDir(":app"),
+            type = AndroidApp,
+            language = language.value,
+            minSdk = minSdk.value,
+            useKts = data.useKts,
+          )
+        )
+      }
+
+      // After the recipe is executed, finalize the project creation
+      // In this phase, we write the build scripts as they may need additional
+      // data based on the previous recipe
+      // For example, writing settings.gradle[.kts] needs to know the name of
+      // the modules so that those can be includedl
+      postRecipe = {
+        // build.gradle[.kts]
+        buildGradle()
+
+        // settings.gradle[.kts]
+        settingsGradle()
+
+        // gradle.properties
+        gradleProps()
+
+        // gradlew
+        // gradlew.bat
+        // gradle/wrapper/gradle-wrapper.jar
+        // gradle/wrapper/gradle-wrapper.properties
+        gradleWrapper()
+
+        // libs.versions.toml
+        libsVersions()
+
+        // .gitignore
+        gitignore()
+      }
+
+      block()
     }
-
-    // After the recipe is executed, finalize the project creation
-    // In this phase, we write the build scripts as they may need additional data based on the previous recipe
-    // For example, writing settings.gradle[.kts] needs to know the name of the modules so that those can be includedl
-    postRecipe = {
-      // build.gradle[.kts]
-      buildGradle()
-
-      // settings.gradle[.kts]
-      settingsGradle()
-
-      // gradle.properties
-      gradleProps()
-
-      // gradlew
-      // gradlew.bat
-      // gradle/wrapper/gradle-wrapper.jar
-      // gradle/wrapper/gradle-wrapper.properties
-      gradleWrapper()
-
-      // .gitignore
-      gitignore()
-    }
-
-    block()
-
-  }.build() as ProjectTemplate
+    .build() as ProjectTemplate
 }
 
 /**
@@ -148,50 +174,61 @@ inline fun baseProject(projectName: StringParameter = projectNameParameter(),
  *
  * @param block The module configurator.
  */
-inline fun baseAndroidModule(isLibrary: Boolean = false,
-  crossinline block: AndroidModuleTemplateConfigurator
+inline fun baseAndroidModule(
+  isLibrary: Boolean = false,
+  crossinline block: AndroidModuleTemplateConfigurator,
 ): ModuleTemplate {
-  return AndroidModuleTemplateBuilder().apply {
+  return AndroidModuleTemplateBuilder()
+    .apply {
+      val appName = if (isLibrary) null else projectNameParameter()
+      val language = projectLanguageParameter()
+      val minSdk = minSdkParameter()
+      val packageName = packageNameParameter()
+      val useKts = useKtsParameter()
 
-    val appName = if (isLibrary) null else projectNameParameter()
-    val language = projectLanguageParameter()
-    val minSdk = minSdkParameter()
-    val packageName = packageNameParameter()
-    val useKts = useKtsParameter()
+      val moduleName = stringParameter {
+        name = R.string.wizard_module_name
+        default = ":app"
+        constraints = listOf(NONEMPTY, MODULE_NAME)
+      }
 
-    val moduleName = stringParameter {
-      name = R.string.wizard_module_name
-      default = ":app"
-      constraints = listOf(NONEMPTY, MODULE_NAME)
+      val type =
+        enumParameter<ModuleType> {
+          name = R.string.wizard_module_type
+          default = AndroidLibrary
+          startIcon = { R.drawable.ic_android }
+          displayName = ModuleType::typeName
+        }
+
+      widgets(TextFieldWidget(moduleName))
+
+      appName?.let { widgets(TextFieldWidget(it)) }
+
+      widgets(
+        TextFieldWidget(packageName),
+        SpinnerWidget(minSdk),
+        SpinnerWidget(type),
+        SpinnerWidget(language),
+        CheckBoxWidget(useKts),
+      )
+
+      preRecipe = commonPreRecipe {
+        ModuleTemplateData(
+          name = moduleName.value,
+          appName = appName?.value,
+          packageName = packageName.value,
+          projectDir = requireProjectData().moduleNameToDir(moduleName.value),
+          type = type.value,
+          language = language.value,
+          minSdk = minSdk.value,
+          useKts = useKts.value,
+        )
+      }
+      postRecipe = commonPostRecipe()
+
+      block()
     }
-
-    val type = enumParameter<ModuleType> {
-      name = R.string.wizard_module_type
-      default = AndroidLibrary
-      startIcon = { R.drawable.ic_android }
-      displayName = ModuleType::typeName
-    }
-
-    widgets(TextFieldWidget(moduleName))
-
-    appName?.let {
-      widgets(TextFieldWidget(it))
-    }
-
-    widgets(TextFieldWidget(packageName), SpinnerWidget(minSdk),
-      SpinnerWidget(type), SpinnerWidget(language), CheckBoxWidget(useKts))
-
-    preRecipe = commonPreRecipe {
-      ModuleTemplateData(name = moduleName.value, appName = appName?.value,
-        packageName = packageName.value,
-        projectDir = requireProjectData().moduleNameToDir(moduleName.value),
-        type = type.value, language = language.value, minSdk = minSdk.value,
-        useKts = useKts.value)
-    }
-    postRecipe = commonPostRecipe()
-
-    block()
-  }.build() as ModuleTemplate
+    .build() as ModuleTemplate
 }
 
 /**
@@ -201,9 +238,10 @@ inline fun baseAndroidModule(isLibrary: Boolean = false,
  * @param configurator The configurator to configure the template.
  * @return The [FileTemplate].
  */
-inline fun <R : FileTemplateRecipeResult> baseFile(dir: File,
-  crossinline configurator: FileTemplateBuilder<R>.() -> Unit
+inline fun <R : FileTemplateRecipeResult> baseFile(
+  dir: File,
+  crossinline configurator: FileTemplateBuilder<R>.() -> Unit,
 ): FileTemplate<R> {
-  return FileTemplateBuilder<R>(dir).apply(configurator)
-    .build() as FileTemplate<R>
+  return FileTemplateBuilder<R>(dir).apply(configurator).build()
+    as FileTemplate<R>
 }

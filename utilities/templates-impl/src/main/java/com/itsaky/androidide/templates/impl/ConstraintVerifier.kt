@@ -31,8 +31,8 @@ import com.itsaky.androidide.templates.ParameterConstraint.PACKAGE
 import com.itsaky.androidide.templates.base.util.isValidModuleName
 import com.itsaky.androidide.templates.impl.R.string
 import com.itsaky.androidide.utils.AndroidUtils
-import jdkx.lang.model.SourceVersion
 import java.io.File
+import jdkx.lang.model.SourceVersion
 
 /**
  * Verifies constraint for text field widget.
@@ -59,19 +59,22 @@ object ConstraintVerifier {
   fun verify(input: String, constraints: List<ParameterConstraint>): String? {
     var err: String?
     for (constraint in constraints) {
-      err = when (constraint) {
-        NONEMPTY -> checkNotEmpty(input)
-        PACKAGE -> validatePackageName(input)
-        CLASS -> validateClassName(input)
-        CLASS_NAME -> validateSimpleName(input)
-        MODULE_NAME -> validateModuleName(input)
-        LAYOUT -> validateLayoutName(input)
-        EXISTS -> checKFileExists(input)
-        FILE -> checkIsFile(input)
-        DIRECTORY -> checkIsDirectory(input)
-        else -> throw IllegalArgumentException(
-          "Unsupported parameter constraint '$constraint'")
-      }
+      err =
+        when (constraint) {
+          NONEMPTY -> checkNotEmpty(input)
+          PACKAGE -> validatePackageName(input)
+          CLASS -> validateClassName(input)
+          CLASS_NAME -> validateSimpleName(input)
+          MODULE_NAME -> validateModuleName(input)
+          LAYOUT -> validateLayoutName(input)
+          EXISTS -> checKFileExists(input)
+          FILE -> checkIsFile(input)
+          DIRECTORY -> checkIsDirectory(input)
+          else ->
+            throw IllegalArgumentException(
+              "Unsupported parameter constraint '$constraint'"
+            )
+        }
 
       if (err != null) {
         return err
@@ -81,7 +84,9 @@ object ConstraintVerifier {
   }
 
   private fun validatePackageName(input: String): String? {
-    AndroidUtils.validatePackageName(input)?.let { return it }
+    AndroidUtils.validatePackageName(input)?.let {
+      return it
+    }
 
     if (SourceVersion.isName(input)) {
       return null
@@ -107,7 +112,9 @@ object ConstraintVerifier {
   }
 
   private fun checkIsDirectory(input: String): String? {
-    checKFileExists(input)?.let { return it }
+    checKFileExists(input)?.let {
+      return it
+    }
 
     val file = File(input)
     if (file.isDirectory) {
@@ -119,7 +126,9 @@ object ConstraintVerifier {
   }
 
   private fun checkIsFile(input: String): String? {
-    checKFileExists(input)?.let { return it }
+    checKFileExists(input)?.let {
+      return it
+    }
 
     val file = File(input)
     if (file.isFile) {
@@ -168,8 +177,9 @@ object ConstraintVerifier {
       err = validatePackageName(pck)
     } else {
       if (!SourceVersion.isIdentifier(pck) || SourceVersion.isKeyword(pck)) {
-        err = BaseApplication.getBaseInstance()
-          .getString(string.msg_package_is_not_valid)
+        err =
+          BaseApplication.getBaseInstance()
+            .getString(string.msg_package_is_not_valid)
       }
     }
 

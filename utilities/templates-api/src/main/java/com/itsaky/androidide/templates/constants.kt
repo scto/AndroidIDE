@@ -17,13 +17,10 @@
 
 package com.itsaky.androidide.templates
 
-/**
- * @author Akash Yadav
- */
-
-const val ANDROID_GRADLE_PLUGIN_VERSION = "8.0.0"
-const val GRADLE_DISTRIBUTION_VERSION = "8.1.1"
-const val KOTLIN_VERSION = "1.8.21"
+/** @author Akash Yadav */
+const val ANDROID_GRADLE_PLUGIN_VERSION = "8.7.1"
+const val GRADLE_DISTRIBUTION_VERSION = "8.10.2"
+const val KOTLIN_VERSION = "2.0.21"
 
 val TARGET_SDK_VERSION = Sdk.Tiramisu
 val COMPILE_SDK_VERSION = Sdk.Tiramisu

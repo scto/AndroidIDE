@@ -48,5 +48,5 @@ enum class Sdk(val codename: String, val version: String, val api: Int) {
    *
    * @return The display name.
    */
-  fun displayName() : String = "API ${api}: Android $version (${codename})"
+  fun displayName(): String = "API ${api}: Android $version (${codename})"
 }

@@ -22,7 +22,9 @@ import com.android.aaptcompiler.android.ResTableConfig
 import com.itsaky.androidide.templates.base.AndroidModuleTemplateBuilder
 import com.itsaky.androidide.templates.base.util.AndroidModuleResManager.ResourceType.VALUES
 
-internal fun simpleMaterial3Theme(themeName: String, actionBar: Boolean = false
+internal fun simpleMaterial3Theme(
+  themeName: String,
+  actionBar: Boolean = false,
 ): String {
   return """
 <resources xmlns:tools="http://schemas.android.com/tools">
@@ -34,27 +36,37 @@ internal fun simpleMaterial3Theme(themeName: String, actionBar: Boolean = false
 
   <style name="$themeName" parent="Base.${themeName}" />
 </resources>
-  """.trim()
+  """
+    .trim()
 }
 
 internal fun AndroidModuleTemplateBuilder.emptyThemesAndColors(
   actionBar: Boolean = false
 ) {
-  val configNight = ConfigDescription().apply {
-    uiMode = ResTableConfig.UI_MODE.NIGHT_YES
-  }
+  val configNight =
+    ConfigDescription().apply { uiMode = ResTableConfig.UI_MODE.NIGHT_YES }
 
   res.apply {
     // values
-    writeXmlResource("themes", VALUES,
-      source = simpleMaterial3Theme(manifest.themeRes, actionBar))
+    writeXmlResource(
+      "themes",
+      VALUES,
+      source = simpleMaterial3Theme(manifest.themeRes, actionBar),
+    )
     writeXmlResource("colors", VALUES, source = emptyValuesFile())
 
     // values-night
-    writeXmlResource("themes", VALUES, config = configNight,
-      source = simpleMaterial3Theme(manifest.themeRes, actionBar))
-    writeXmlResource("colors", VALUES, config = configNight,
-      source = emptyValuesFile())
+    writeXmlResource(
+      "themes",
+      VALUES,
+      config = configNight,
+      source = simpleMaterial3Theme(manifest.themeRes, actionBar),
+    )
+    writeXmlResource(
+      "colors",
+      VALUES,
+      config = configNight,
+      source = emptyValuesFile(),
+    )
   }
-
 }

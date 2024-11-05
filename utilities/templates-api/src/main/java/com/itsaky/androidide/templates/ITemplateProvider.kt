@@ -33,24 +33,21 @@ interface ITemplateProvider {
     /**
      * Get the template provider instance.
      *
-     * @param reload Whether to reload the provider. If the value is `true`
-     * and the provider is cached, the provider is cleared and loaded again.
+     * @param reload Whether to reload the provider. If the value is `true` and
+     *   the provider is cached, the provider is cleared and loaded again.
      */
     @JvmStatic
     @JvmOverloads
     fun getInstance(reload: Boolean = false): ITemplateProvider {
 
-      return provider?.also { if (reload) it.reload() } ?: ServiceLoader.load(
-        ITemplateProvider::class.java)
-        .findFirstOrThrow()
-        .also { provider = it }
+      return provider?.also { if (reload) it.reload() }
+        ?: ServiceLoader.load(ITemplateProvider::class.java)
+          .findFirstOrThrow()
+          .also { provider = it }
     }
 
-    /**
-     * @return Whether the [ITemplateProvider] has been loaded or not.
-     */
-    @JvmStatic
-    fun isLoaded() = provider != null
+    /** @return Whether the [ITemplateProvider] has been loaded or not. */
+    @JvmStatic fun isLoaded() = provider != null
   }
 
   /**
@@ -68,13 +65,9 @@ interface ITemplateProvider {
    */
   fun getTemplate(templateId: String): Template<*>?
 
-  /**
-   * Reloads the templates.
-   */
+  /** Reloads the templates. */
   fun reload()
 
-  /**
-   * Clear all the templates stored in the provider.
-   */
+  /** Clear all the templates stored in the provider. */
   fun release()
 }

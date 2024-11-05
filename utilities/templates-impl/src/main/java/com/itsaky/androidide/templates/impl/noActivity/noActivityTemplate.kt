@@ -27,10 +27,6 @@ fun noActivityProjectTemplate() = baseProjectImpl {
   templateName = R.string.template_no_activity
   thumb = R.drawable.template_no_activity
   defaultAppModule {
-    recipe = createRecipe {
-      res {
-        emptyThemesAndColors(actionBar = true)
-      }
-    }
+    recipe = createRecipe { res { emptyThemesAndColors(actionBar = true) } }
   }
 }

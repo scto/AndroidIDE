@@ -27,7 +27,10 @@ import com.itsaky.androidide.templates.base.models.DependencyConfiguration.Imple
  * @param version The dependency version.
  * @return The [Dependency] artifact.
  */
-fun defaultDependency(group: String, artifact: String, version: String
+fun defaultDependency(
+  group: String,
+  artifact: String,
+  version: String,
 ): Dependency {
   return Dependency(Implementation, group, artifact, version)
 }
@@ -35,23 +38,50 @@ fun defaultDependency(group: String, artifact: String, version: String
 /**
  * Parse the given maven dependency coordinates to a [Dependency] object.
  *
- * @param coordinates The maven dependency coordinates in the form 'group:artifact:version'.
+ * @param coordinates The maven dependency coordinates in the form
+ *   'group:artifact:version'.
  * @param configuration The dependency configuration.
  * @return The [Dependency] artifact.s
  */
 fun parseDependency(
-  coordinates: String, configuration: DependencyConfiguration = Implementation,
+  coordinates: String,
+  configuration: DependencyConfiguration = Implementation,
   isPlatform: Boolean = false,
 ): Dependency {
   val split = coordinates.split(':')
   if (isPlatform) {
-    require(
-      split.size == 3) { "Maven coordinates must be in the form 'group:artifact:version'" }
+    require(split.size == 3) {
+      "Maven coordinates must be in the form 'group:artifact:version'"
+    }
   } else {
-    require(
-      split.size in 2..3) { "Maven coordinates must be in the form 'group:artifact[:version]'" }
+    require(split.size in 2..3) {
+      "Maven coordinates must be in the form 'group:artifact[:version]'"
+    }
   }
 
-  val version = if (split.size == 3) split[2] else null
-  return Dependency(configuration, split[0], split[1], version)
+  val version =
+    if (split.size == 3) {
+      Version(name = split[1], version = split[2])
+    } else null
+
+  return Dependency(
+    configuration = configuration,
+    group = split[0],
+    artifact = split[1],
+    version = version,
+  )
+}
+
+fun parsePlugin(id: String, version: String): Plugin {
+  val split = id.split(".")
+  val size = split.size
+
+  require(size >= 2) { "Plugin id `$id` is invalid" }
+
+  val name =
+    if (size >= 3) {
+      "${split[size -2]}-${split[size -1]}"
+    } else "${split[size - 1]}"
+
+  return Plugin(name, id, Version(name, version))
 }

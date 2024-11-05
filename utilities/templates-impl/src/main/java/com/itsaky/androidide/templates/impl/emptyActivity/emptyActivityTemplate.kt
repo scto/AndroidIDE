@@ -33,13 +33,9 @@ fun emptyActivityProject(): ProjectTemplate = baseProjectImpl {
   thumb = R.drawable.template_empty_activity
   defaultAppModule {
     recipe = createRecipe {
-      sources {
-        writeEmptyActivity(this)
-      }
+      sources { writeEmptyActivity(this) }
 
-      res {
-        writeEmptyActivity()
-      }
+      res { writeEmptyActivity() }
     }
   }
 }

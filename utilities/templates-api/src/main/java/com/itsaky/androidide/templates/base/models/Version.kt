@@ -15,24 +15,6 @@
  *   along with AndroidIDE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.itsaky.androidide.templates.impl.noAndroidXActivity
+package com.itsaky.androidide.templates.base.models
 
-internal fun noAndroidXActivityLayout() =
-  """
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello World!"
-        android:gravity="center"/>
-    
-</LinearLayout>
-"""
-    .trim()
+data class Version(val name: String, val version: String)

@@ -34,9 +34,7 @@ fun basicActivityProject(): ProjectTemplate {
     thumb = R.drawable.template_basic_activity
     defaultAppModule {
       recipe = createRecipe {
-        sources {
-          writeBasicActivitySrc(this)
-        }
+        sources { writeBasicActivitySrc(this) }
 
         res {
           writeBasicActivityLayout()
@@ -50,8 +48,11 @@ fun basicActivityProject(): ProjectTemplate {
 private fun AndroidModuleTemplateBuilder.writeBasicActivitySrc(
   writer: SourceWriter
 ) {
-  writeMainActivity(writer = writer, ktSrc = ::basicActivitySrcKt,
-    javaSrc = ::basicActivitySrcJava)
+  writeMainActivity(
+    writer = writer,
+    ktSrc = ::basicActivitySrcKt,
+    javaSrc = ::basicActivitySrcJava,
+  )
 }
 
 internal fun AndroidModuleTemplateBuilder.writeBasicActivityLayout() {

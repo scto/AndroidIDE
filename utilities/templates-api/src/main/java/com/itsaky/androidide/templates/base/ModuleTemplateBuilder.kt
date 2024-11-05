@@ -27,7 +27,7 @@ import com.itsaky.androidide.templates.TemplateBuilder
 import com.itsaky.androidide.templates.TemplateRecipeConfigurator
 import com.itsaky.androidide.templates.TemplateRecipeFinalizer
 import com.itsaky.androidide.templates.base.models.Dependency
-import com.itsaky.androidide.templates.base.models.defaultDependency
+import com.itsaky.androidide.templates.base.models.Plugin
 import com.itsaky.androidide.templates.base.util.SourceWriter
 import java.io.File
 
@@ -38,21 +38,22 @@ import java.io.File
  * @author Akash Yadav
  */
 abstract class ModuleTemplateBuilder :
-  ExecutorDataTemplateBuilder<ModuleTemplateRecipeResult, ModuleTemplateData>() {
+  ExecutorDataTemplateBuilder<
+    ModuleTemplateRecipeResult,
+    ModuleTemplateData,
+  >() {
 
-  internal val platforms = hashSetOf<Dependency>()
-  internal val dependencies = hashSetOf<Dependency>()
+  internal val libraries = ModuleTemplateLibraries()
 
-  @PublishedApi
-  internal val sourceWriter = SourceWriter()
+  @PublishedApi internal val sourceWriter = SourceWriter()
 
-  @PublishedApi
-  internal var _name: String? = null
+  @PublishedApi internal var _name: String? = null
 
   val name: String
     get() = checkNotNull(_name) { "Name not set to module template" }
 
   open fun RecipeExecutor.preConfig() {}
+
   open fun RecipeExecutor.postConfig() {}
 
   /**
@@ -64,19 +65,20 @@ abstract class ModuleTemplateBuilder :
   open fun baseAsset(path: String) =
     com.itsaky.androidide.templates.base.util.baseAsset("module", path)
 
-  /**
-   * Get the `build.gradle[.kts]` file for this module.l
-   */
+  /** Get the `build.gradle[.kts]` file for this module.l */
   fun buildGradleFile(): File {
     return data.buildGradleFile()
   }
 
   /**
-   * Get the path to the Java source file in the given [source set][srcSet] with the
-   * given [packageName] and the [simple name][name].
+   * Get the path to the Java source file in the given [source set][srcSet] with
+   * the given [packageName] and the [simple name][name].
    */
-  fun srcFilePath(srcSet: SrcSet, packageName: String, name: String,
-                  language: Language
+  fun srcFilePath(
+    srcSet: SrcSet,
+    packageName: String,
+    name: String,
+    language: Language,
   ): File {
     var path = packageName.replace('.', '/')
     path += "/${name}"
@@ -85,30 +87,22 @@ abstract class ModuleTemplateBuilder :
     return File(javaSrc(srcSet), path)
   }
 
-  /**
-   * Get the `java` sources directory for the [SrcSet.Main] source set.
-   */
+  /** Get the `java` sources directory for the [SrcSet.Main] source set. */
   fun mainJavaSrc(): File {
     return javaSrc(SrcSet.Main)
   }
 
-  /**
-   * Get the `resources` directory for the [SrcSet.Main] source set.
-   */
+  /** Get the `resources` directory for the [SrcSet.Main] source set. */
   fun mainResourcesDir(): File {
     return javaSrc(SrcSet.Main)
   }
 
-  /**
-   * Get the `resources` directory for the given [source set][srcSet].
-   */
+  /** Get the `resources` directory for the given [source set][srcSet]. */
   fun resourcesDir(srcSet: SrcSet): File {
     return File(srcFolder(srcSet), "resources").also { it.mkdirs() }
   }
 
-  /**
-   * Get the `java` source directory for the given [srcSet].
-   */
+  /** Get the `java` source directory for the given [srcSet]. */
   fun javaSrc(srcSet: SrcSet): File {
     return File(srcFolder(srcSet), "java").also { it.mkdirs() }
   }
@@ -127,18 +121,22 @@ abstract class ModuleTemplateBuilder :
    *
    * @param configure Function for configuring the source files.
    */
-  inline fun RecipeExecutor.sources(crossinline configure: SourceWriter.() -> Unit) {
+  inline fun RecipeExecutor.sources(
+    crossinline configure: SourceWriter.() -> Unit
+  ) {
     sourceWriter.apply(configure)
   }
 
   /**
    * Common pre-recipe configuration.
    *
-   * @param moduleData  Called after the base configuration is setup and before the [recipe] is executed. Caller can perform its own
-   * pre-recipe configuration here. Returns the [ModuleTemplateData] instance.
+   * @param moduleData Called after the base configuration is setup and before
+   *   the [recipe] is executed. Caller can perform its own pre-recipe
+   *   configuration here. Returns the [ModuleTemplateData] instance.
    */
-  inline fun commonPreRecipe(crossinline extraConfig: TemplateRecipeConfigurator = {},
-                      crossinline moduleData: RecipeExecutor.() -> ModuleTemplateData
+  inline fun commonPreRecipe(
+    crossinline extraConfig: TemplateRecipeConfigurator = {},
+    crossinline moduleData: RecipeExecutor.() -> ModuleTemplateData,
   ): TemplateRecipeConfigurator = {
     val data = moduleData()
 
@@ -158,10 +156,11 @@ abstract class ModuleTemplateBuilder :
   /**
    * Common post-recipe configuration.
    *
-   * @param extraConfig Called after the [recipe] is executed. Caller can perform its own
-   * post-recipe configuration here.
+   * @param extraConfig Called after the [recipe] is executed. Caller can
+   *   perform its own post-recipe configuration here.
    */
-  fun commonPostRecipe(extraConfig: TemplateRecipeFinalizer = {}
+  fun commonPostRecipe(
+    extraConfig: TemplateRecipeFinalizer = {}
   ): TemplateRecipeFinalizer = {
 
     // Write build.gradle[.kts]
@@ -171,45 +170,40 @@ abstract class ModuleTemplateBuilder :
     extraConfig()
   }
 
-  /**
-   * Add the dependency with the given maven coordinates to this module with the
-   * [Implementation][com.itsaky.androidide.templates.base.models.DependencyConfiguration.Implementation]
-   * configuration.
-   *
-   * @param group The group ID of the dependency.
-   * @param artifact The artifact of the dependency.
-   * @param version The version of the dependency.
-   * @param isPlatform Whether this dependency declares a BOM.
-   */
   @JvmOverloads
-  fun addDependency(group: String, artifact: String, version: String,
-                    isPlatform: Boolean = false
+  fun addDependency(
+    group: String,
+    artifact: String,
+    version: String,
+    isPlatform: Boolean = false,
   ) {
-    addDependency(defaultDependency(group, artifact, version), isPlatform)
+    libraries.addDependency(
+      group = group,
+      artifact = artifact,
+      version = version,
+      isPlatform = isPlatform,
+    )
   }
 
-  /**
-   * Adds the given dependency to the `build.gradle[.kts]` file for this module.
-   *
-   * @param dependency The dependency to add.
-   * @param isPlatform Whether this dependency declares a BOM.
-   */
   @JvmOverloads
   fun addDependency(dependency: Dependency, isPlatform: Boolean = false) {
-    if (isPlatform) {
-      this.platforms.add(dependency)
-    } else {
-      this.dependencies.add(dependency)
-    }
+    libraries.addDependency(dependency, isPlatform)
   }
 
-  /**
-   * Writes the `build.gradle[.kts]` file for this module.
-   */
+  @JvmOverloads
+  fun addPlugin(id: String, version: String) {
+    libraries.addPlugin(id, version)
+  }
+
+  @JvmOverloads
+  fun addPligin(plugin: Plugin) {
+    libraries.addPlugin(plugin)
+  }
+
+  /** Writes the `build.gradle[.kts]` file for this module. */
   abstract fun RecipeExecutor.buildGradle()
 
   override fun buildInternal(): ModuleTemplate {
-    return ModuleTemplate(name, templateName!!, thumb!!, widgets!!,
-      recipe!!)
+    return ModuleTemplate(name, templateName!!, thumb!!, widgets!!, recipe!!)
   }
 }

@@ -22,8 +22,8 @@ import com.itsaky.androidide.templates.impl.base.baseLayoutContentMain
 
 internal fun emptyLayoutSrc() = baseLayoutContentMain()
 
-internal fun AndroidModuleTemplateBuilder.emptyActivitySrcKt(): String {
-  return """
+internal fun AndroidModuleTemplateBuilder.emptyActivitySrcKt() =
+  """
 package ${data.packageName}
 
 import androidx.appcompat.app.AppCompatActivity
@@ -33,10 +33,10 @@ import ${data.packageName}.databinding.ActivityMainBinding
 public class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null
-    
+
     private val binding: ActivityMainBinding
       get() = checkNotNull(_binding) { "Activity has been destroyed" }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,17 +46,16 @@ public class MainActivity : AppCompatActivity() {
         // set content view to binding's root
         setContentView(binding.root)
     }
-    
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 }
 """
-}
 
-internal fun AndroidModuleTemplateBuilder.emptyActivitySrcJava(): String {
-  return """
+internal fun AndroidModuleTemplateBuilder.emptyActivitySrcJava() =
+  """
 package ${data.packageName};
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         // set content view to binding's root
         setContentView(binding.getRoot());
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -84,4 +83,3 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 """
-}

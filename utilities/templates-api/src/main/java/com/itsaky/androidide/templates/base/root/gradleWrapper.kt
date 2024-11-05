@@ -36,5 +36,6 @@ internal fun ProjectTemplateBuilder.gradleWrapperPropsSrc(): String {
     networkTimeout=10000
     zipStoreBase=GRADLE_USER_HOME
     zipStorePath=wrapper/dists
-  """.trimIndent()
+  """
+    .trimIndent()
 }

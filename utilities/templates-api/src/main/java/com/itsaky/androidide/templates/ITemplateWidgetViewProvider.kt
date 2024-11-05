@@ -22,7 +22,8 @@ import android.view.View
 import com.itsaky.androidide.utils.ServiceLoader
 
 /**
- * [ITemplateWidgetViewProvider] creates [views][View] for various type of [widgets][Widget].
+ * [ITemplateWidgetViewProvider] creates [views][View] for various type of
+ * [widgets][Widget].
  *
  * @author Akash Yadav
  */
@@ -38,10 +39,10 @@ interface ITemplateWidgetViewProvider {
       if (reload) {
         service = null
       }
-      return service ?: ServiceLoader.load(
-        ITemplateWidgetViewProvider::class.java)
-        .findFirstOrThrow()
-        .also { service = it }
+      return service
+        ?: ServiceLoader.load(ITemplateWidgetViewProvider::class.java)
+          .findFirstOrThrow()
+          .also { service = it }
     }
   }
 
