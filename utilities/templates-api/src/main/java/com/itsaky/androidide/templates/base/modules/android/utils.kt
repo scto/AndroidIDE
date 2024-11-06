@@ -56,7 +56,7 @@ inline fun ProjectTemplateBuilder.defaultAppModule(
 
         postRecipe = commonPostRecipe {
           // Add Android module base plugins
-          baseAndroidPlugins()
+          this@apply.baseAndroidPlugins()
 
           if (copyDefAssets) {
             copyDefaultRes()
