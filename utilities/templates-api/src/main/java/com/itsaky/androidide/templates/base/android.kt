@@ -17,12 +17,13 @@
 
 package com.itsaky.androidide.templates.base
 
+import com.itsaky.androidide.templates.Language
 import com.itsaky.androidide.templates.base.models.Plugin.Plugins
 
 /** Configure Android plugins. */
 fun AndroidModuleTemplateBuilder.baseAndroidPlugins() {
   addPlugin(Plugins.AndroidPlugin)
-  if (data.language == Kotlin) {
+  if (data.language == Language.Kotlin) {
     addPlugin(Plugins.KotlinAndroidPlugin)
   }
 }

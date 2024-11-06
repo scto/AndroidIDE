@@ -19,6 +19,7 @@ package com.itsaky.androidide.templates
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.itsaky.androidide.templates.base.ModuleTemplateLibraries
 import com.itsaky.androidide.templates.base.util.optonallyKts
 import java.io.File
 import java.util.UUID
@@ -298,6 +299,7 @@ open class ProjectTemplate(
  */
 open class ModuleTemplate(
   val name: String,
+  val libraries: ModuleTemplateLibraries,
   @StringRes templateName: Int,
   @DrawableRes thumb: Int,
   widgets: List<Widget<*>>,

@@ -95,7 +95,7 @@ public class CppLanguage extends IDELanguage {
       CPP14Lexer lexer = new CPP14Lexer(CharStreams.fromReader(new StringReader(line)));
       Token token;
       int advance = 0;
-      while (((token = lexer.nextToken()) != null && token.getType() != token.EOF)) {
+      while (((token = lexer.nextToken()) != null && token.getType() != Token.EOF)) {
         switch (token.getType()) {
           case CPP14Lexer.LeftBrace:
             advance++;

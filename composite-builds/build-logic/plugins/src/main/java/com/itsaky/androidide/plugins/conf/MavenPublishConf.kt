@@ -38,7 +38,6 @@ import java.io.File
 private val projectsRequiringMavenLocalForTests = arrayOf(":tooling:plugin")
 private val mavenLocalRepos = hashMapOf<String, String>()
 
-@Suppress("UnstableApiUsage")
 fun Project.configureMavenPublish() {
   assert(plugins.hasPlugin("com.vanniktech.maven.publish.base")) {
     "${javaClass.simpleName} can only be applied to maven publish projects."

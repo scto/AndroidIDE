@@ -21,7 +21,7 @@
         <module name="AndroidIDE.annotation.processors.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel target="11">
       <module name="AndroidIDE.actions" target="17" />
       <module name="AndroidIDE.annotation-ksp" target="17" />
       <module name="AndroidIDE.annotation-ksp.main" target="17" />

@@ -20,6 +20,7 @@ package com.itsaky.androidide.templates.base.root
 import com.itsaky.androidide.templates.base.ProjectTemplateBuilder
 import com.itsaky.androidide.templates.base.models.Dependency
 import com.itsaky.androidide.templates.base.models.Plugin
+import java.io.File
 
 internal fun ProjectTemplateBuilder.libsVersionsToml() {
   val name = "libs.versions.toml"
@@ -98,8 +99,8 @@ private fun ProjectTemplateBuilder.pluginsSrc(
 private fun ProjectTemplateBuilder.getDependencies(): HashSet<Dependency> {
   val dependencies = hashSetOf<Dependency>()
   modules.forEach { module ->
-    dependencies.addAll(module.platforms)
-    dependencies.addAll(module.dependencies)
+    dependencies.addAll(module.libraries.platforms)
+    dependencies.addAll(module.libraries.dependencies)
   }
 
   return dependencies
@@ -107,7 +108,7 @@ private fun ProjectTemplateBuilder.getDependencies(): HashSet<Dependency> {
 
 private fun ProjectTemplateBuilder.getPlugins(): HashSet<Plugin> {
   val plugins = hashSetOf<Plugin>()
-  modules.forEach { module -> plugins.addAll(module.plugins) }
+  modules.forEach { module -> plugins.addAll(module.libraries.plugins) }
 
   return plugins
 }

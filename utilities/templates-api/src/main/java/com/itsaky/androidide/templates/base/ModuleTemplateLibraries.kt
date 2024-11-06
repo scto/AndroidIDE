@@ -68,12 +68,10 @@ data class ModuleTemplateLibraries(
     }
   }
 
-  @JvmOverloads
   fun addPlugin(id: String, version: String) {
     addPlugin(parsePlugin(id, version))
   }
 
-  @JvmOverloads
   fun addPlugin(plugin: Plugin) {
     this.plugins.add(plugin)
   }

@@ -32,7 +32,7 @@ plugins {
 private fun ProjectTemplateBuilder.pluginsSrc(): String {
   val plugins: HashSet<Plugin> = hashSetOf()
 
-  modules.forEach { module -> plugins.addAll(module.plugins) }
+  modules.forEach { module -> plugins.addAll(module.libraries.plugins) }
 
   return plugins.joinToString("\n") { it.value() }
 }
