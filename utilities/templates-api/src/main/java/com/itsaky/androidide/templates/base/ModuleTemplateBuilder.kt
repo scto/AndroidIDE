@@ -197,12 +197,10 @@ abstract class ModuleTemplateBuilder : ExecutorDataTemplateBuilder<ModuleTemplat
     libraries.addDependency(dependency, isPlatform)
   }
 
-  @JvmOverloads
   fun addPlugin(id: String, version: String) {
     libraries.addPlugin(id, version)
   }
 
-  @JvmOverloads
   fun addPlugin(plugin: Plugin) {
     libraries.addPlugin(plugin)
   }

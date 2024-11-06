@@ -60,7 +60,7 @@ private fun ProjectTemplateBuilder.versionsSrc(
     dependencies.joinToString("\n") {
       val version = it.version
       if (version != null) {
-        "${version.name} = ${version.version}"
+        "${version.name} = \"${version.version}\""
       } else ""
     }
 

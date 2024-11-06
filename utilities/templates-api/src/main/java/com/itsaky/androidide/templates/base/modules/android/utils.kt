@@ -51,12 +51,12 @@ inline fun ProjectTemplateBuilder.defaultAppModule(
         thumb = 0
 
         preRecipe = commonPreRecipe {
+          // Add Android module base plugins
+          this@apply.baseAndroidPlugins()
           return@commonPreRecipe defModule
         }
 
         postRecipe = commonPostRecipe {
-          // Add Android module base plugins
-          this@apply.baseAndroidPlugins()
 
           if (copyDefAssets) {
             copyDefaultRes()
