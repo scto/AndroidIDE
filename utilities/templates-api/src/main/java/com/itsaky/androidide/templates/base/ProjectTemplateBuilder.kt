@@ -26,6 +26,7 @@ import com.itsaky.androidide.templates.ProjectTemplateRecipeResult
 import com.itsaky.androidide.templates.base.root.gradleWrapperProps
 import com.itsaky.androidide.templates.base.root.libsVersionsToml
 import com.itsaky.androidide.templates.base.root.settingsGradleSrcStr
+import com.itsaky.androidide.templates.base.root.buildGradleSrc
 import com.itsaky.androidide.templates.base.util.optonallyKts
 import com.itsaky.androidide.utils.transferToStream
 import java.io.File
@@ -78,11 +79,6 @@ class ProjectTemplateBuilder : ExecutorDataTemplateBuilder<ProjectTemplateRecipe
   /** Writes the `build.gradle[.kts]` file in the project root directory. */
   fun buildGradle() {
     executor.save(buildGradleSrc(), buildGradleFile())
-  }
-
-  /** Get the source for `build.gradle[.kts]` files. */
-  fun buildGradleSrc(): String {
-    return buildGradleSrc()
   }
 
   /** Writes the `settings.gradle[.kts]` file in the project root directory. */
