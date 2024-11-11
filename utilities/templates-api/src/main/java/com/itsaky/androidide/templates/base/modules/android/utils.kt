@@ -50,9 +50,15 @@ inline fun ProjectTemplateBuilder.defaultAppModule(
         templateName = 0
         thumb = 0
 
-        preRecipe = commonPreRecipe {
-          // Add Android module base plugins
-          this@apply.baseAndroidPlugins()
+        preRecipe = commonPreRecipe(
+          extraConfig = {
+            // Add Android module base plugins
+            this@apply.baseAndroidPlugins()
+            if (addAndroidX) {
+              this@apply.baseAndroidXDependencies()
+            }
+          }
+        ) {
           return@commonPreRecipe defModule
         }
 
@@ -74,10 +80,6 @@ inline fun ProjectTemplateBuilder.defaultAppModule(
               }
             }
           }
-        }
-
-        if (addAndroidX) {
-          baseAndroidXDependencies()
         }
 
         block()
