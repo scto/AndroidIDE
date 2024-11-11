@@ -37,15 +37,17 @@ import java.io.File
  * @property name The name of the module (gradle format, e.g. ':app').
  * @author Akash Yadav
  */
-abstract class ModuleTemplateBuilder : ExecutorDataTemplateBuilder<ModuleTemplateRecipeResult, ModuleTemplateData>() {
+abstract class ModuleTemplateBuilder :
+  ExecutorDataTemplateBuilder<
+    ModuleTemplateRecipeResult,
+    ModuleTemplateData,
+  >() {
 
   internal val libraries = ModuleTemplateLibraries()
 
-  @PublishedApi
-  internal val sourceWriter = SourceWriter()
+  @PublishedApi internal val sourceWriter = SourceWriter()
 
-  @PublishedApi
-  internal var _name: String? = null
+  @PublishedApi internal var _name: String? = null
 
   val name: String
     get() = checkNotNull(_name) { "Name not set to module template" }
@@ -209,6 +211,13 @@ abstract class ModuleTemplateBuilder : ExecutorDataTemplateBuilder<ModuleTemplat
   abstract fun RecipeExecutor.buildGradle()
 
   override fun buildInternal(): ModuleTemplate {
-    return ModuleTemplate(name, libraries, templateName!!, thumb!!, widgets!!, recipe!!)
+    return ModuleTemplate(
+      name,
+      libraries,
+      templateName!!,
+      thumb!!,
+      widgets!!,
+      recipe!!,
+    )
   }
 }

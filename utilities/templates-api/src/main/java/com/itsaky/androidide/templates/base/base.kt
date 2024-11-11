@@ -142,6 +142,10 @@ inline fun baseProject(
       // For example, writing settings.gradle[.kts] needs to know the name of
       // the modules so that those can be includedl
       postRecipe = {
+
+        // libs.versions.toml
+        libsVersions()
+
         // build.gradle[.kts]
         buildGradle()
 
@@ -156,9 +160,6 @@ inline fun baseProject(
         // gradle/wrapper/gradle-wrapper.jar
         // gradle/wrapper/gradle-wrapper.properties
         gradleWrapper()
-
-        // libs.versions.toml
-        libsVersions()
 
         // .gitignore
         gitignore()

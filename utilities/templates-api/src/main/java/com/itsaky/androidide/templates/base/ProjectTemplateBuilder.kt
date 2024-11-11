@@ -23,10 +23,10 @@ import com.itsaky.androidide.templates.ModuleTemplateData
 import com.itsaky.androidide.templates.ProjectTemplate
 import com.itsaky.androidide.templates.ProjectTemplateData
 import com.itsaky.androidide.templates.ProjectTemplateRecipeResult
+import com.itsaky.androidide.templates.base.root.buildGradleSrc
 import com.itsaky.androidide.templates.base.root.gradleWrapperProps
 import com.itsaky.androidide.templates.base.root.libsVersionsToml
 import com.itsaky.androidide.templates.base.root.settingsGradleSrcStr
-import com.itsaky.androidide.templates.base.root.buildGradleSrc
 import com.itsaky.androidide.templates.base.util.optonallyKts
 import com.itsaky.androidide.utils.transferToStream
 import java.io.File
@@ -38,15 +38,17 @@ import java.util.zip.ZipInputStream
  *
  * @author Akash Yadav, Felipe Teixeira
  */
-class ProjectTemplateBuilder : ExecutorDataTemplateBuilder<ProjectTemplateRecipeResult, ProjectTemplateData>() {
+class ProjectTemplateBuilder :
+  ExecutorDataTemplateBuilder<
+    ProjectTemplateRecipeResult,
+    ProjectTemplateData,
+  >() {
 
   private var _defModule: ModuleTemplateData? = null
 
-  @PublishedApi
-  internal val defModuleTemplate: ModuleTemplate? = null
+  @PublishedApi internal val defModuleTemplate: ModuleTemplate? = null
 
-  @PublishedApi
-  internal val modules = mutableListOf<ModuleTemplate>()
+  @PublishedApi internal val modules = mutableListOf<ModuleTemplate>()
 
   @PublishedApi
   internal val defModule: ModuleTemplateData
@@ -60,6 +62,18 @@ class ProjectTemplateBuilder : ExecutorDataTemplateBuilder<ProjectTemplateRecipe
    */
   fun setDefaultModuleData(data: ModuleTemplateData) {
     _defModule = data
+  }
+
+  fun addModule(module: ModuleTemplate) {
+    modules.add(module)
+
+    if (this._executor != null) {
+      // Update version catalog [libs.versions.toml]
+      libsVersions()
+
+      // Update the project's root build.gradle
+      buildGradle()
+    }
   }
 
   /**
@@ -109,10 +123,10 @@ class ProjectTemplateBuilder : ExecutorDataTemplateBuilder<ProjectTemplateRecipe
   fun gradleWrapper() {
 
     ZipInputStream(
-      executor
-        .openAsset(ToolsManager.getCommonAsset("gradle-wrapper.zip"))
-        .buffered()
-    )
+        executor
+          .openAsset(ToolsManager.getCommonAsset("gradle-wrapper.zip"))
+          .buffered()
+      )
       .use { zipIn ->
         val entriesToCopy =
           arrayOf("gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar")

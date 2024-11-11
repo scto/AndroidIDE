@@ -50,20 +50,20 @@ inline fun ProjectTemplateBuilder.defaultAppModule(
         templateName = 0
         thumb = 0
 
-        preRecipe = commonPreRecipe(
-          extraConfig = {
-            // Add Android module base plugins
-            this@apply.baseAndroidPlugins()
-            if (addAndroidX) {
-              this@apply.baseAndroidXDependencies()
+        preRecipe =
+          commonPreRecipe(
+            extraConfig = {
+              // Add Android module base plugins
+              this@apply.baseAndroidPlugins()
+              if (addAndroidX) {
+                this@apply.baseAndroidXDependencies()
+              }
             }
+          ) {
+            return@commonPreRecipe defModule
           }
-        ) {
-          return@commonPreRecipe defModule
-        }
 
         postRecipe = commonPostRecipe {
-
           if (copyDefAssets) {
             copyDefaultRes()
 
@@ -86,5 +86,5 @@ inline fun ProjectTemplateBuilder.defaultAppModule(
       }
       .build() as ModuleTemplate
 
-  modules.add(module)
+  addModule(module)
 }
