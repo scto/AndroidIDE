@@ -214,6 +214,8 @@ class NewFileAction(context: Context, override val order: Int) :
 
     val created =
       doCreateClassFile(
+        binding,
+        file,
         fileTypeId == binding.typeKotlin.id,
         classTypeId,
         name,
@@ -228,12 +230,15 @@ class NewFileAction(context: Context, override val order: Int) :
   }
 
   private fun doCreateClassFile(
+    binding: LayoutCreateFileClassBinding,
+    file: File,
     isKotlin: Boolean,
     classTypeId: Int,
     name: String,
     pkgName: String,
     node: TreeNode?,
   ): Boolean {
+    val context = binding.root.context
     val fileName =
       when {
         isKotlin -> if (name.endsWith(".kt")) name else "$name.kt"
