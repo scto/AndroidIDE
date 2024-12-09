@@ -49,7 +49,7 @@ abstract class FileTabAction : EditorActivityAction() {
         }
 
     visible = activity.editorViewModel.getOpenedFiles().isNotEmpty()
-    enabled = visible
+    enabled = visible && !activity.areFilesSaving()
   }
 
   override suspend fun execAction(data: ActionData): Any {
