@@ -172,7 +172,7 @@ class NewFileAction(context: Context, override val order: Int) :
     builder.setPositiveButton(R.string.text_create) { dialogInterface, _ ->
       dialogInterface.dismiss()
       try {
-        doCreateJavaFile(binding, file, context, node)
+        doCreateClassFile(binding, file, context, node)
       } catch (e: Exception) {
         log.error("Failed to create Java file", e)
         flashError(e.cause?.message ?: e.message)
