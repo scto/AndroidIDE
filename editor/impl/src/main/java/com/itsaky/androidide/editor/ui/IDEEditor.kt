@@ -672,13 +672,13 @@ open class IDEEditor @JvmOverloads constructor(
 
     getComponent(EditorTextActionWindow::class.java).isEnabled = false
 
-    subscribeEvent(ContentChangeEvent::class.java) { event, _ ->
+    subscribeAlways(ContentChangeEvent::class.java) { event ->
       if (isReleased) {
-        return@subscribeEvent
+        return@subscribeAlways
       }
 
       markModified()
-      file ?: return@subscribeEvent
+      file ?: return@subscribeAlways
 
       editorScope.launch {
         dispatchDocumentChangeEvent(event)
@@ -686,9 +686,9 @@ open class IDEEditor @JvmOverloads constructor(
       }
     }
 
-    subscribeEvent(SelectionChangeEvent::class.java) { _, _ ->
+    subscribeAlways(SelectionChangeEvent::class.java) {
       if (isReleased) {
-        return@subscribeEvent
+        return@subscribeAlways
       }
 
       if (_diagnosticWindow?.isShowing == true) {

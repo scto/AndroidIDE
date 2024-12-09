@@ -48,9 +48,9 @@ public class SignatureHelpWindow extends BaseEditorWindow {
   public SignatureHelpWindow(@NonNull IDEEditor editor) {
     super(editor);
 
-    editor.subscribeEvent(
+    editor.subscribeAlways(
         SelectionChangeEvent.class,
-        (event, unsubscribe) -> {
+        event -> {
           if (isShowing()) {
             dismiss();
           }

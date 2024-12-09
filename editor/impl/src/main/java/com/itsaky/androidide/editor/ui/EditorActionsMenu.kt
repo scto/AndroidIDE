@@ -123,13 +123,13 @@ open class EditorActionsMenu(val editor: IDEEditor) :
 
   open fun subscribe() {
     receipts.add(
-      editor.subscribeEvent(SelectionChangeEvent::class.java) { event, _ ->
+      editor.subscribeAlways(SelectionChangeEvent::class.java) { event ->
         this.onSelectionChanged(event)
       }
     )
-    receipts.add(editor.subscribeEvent(ScrollEvent::class.java) { _, _ -> this.onScrollEvent() })
+    receipts.add(editor.subscribeAlways(ScrollEvent::class.java) { this.onScrollEvent() })
     receipts.add(
-      editor.subscribeEvent(HandleStateChangeEvent::class.java) { event, _ ->
+      editor.subscribeAlways(HandleStateChangeEvent::class.java) { event ->
         this.onHandleStateChanged(event)
       }
     )
