@@ -98,19 +98,31 @@ public class ProjectWriter {
     return null;
   }
 
-  public static String createJavaClass(String packageName, String className) {
-    return ClassBuilder.createClass(packageName, className);
+  public static String createJavaClass(boolean isKotlin, String packageName, String className) {
+    if (isKotlin) {
+      return KotlinClassBuilder.createClass(packageName, className);
+    }
+    return JavaClassBuilder.createClass(packageName, className);
   }
 
-  public static String createJavaInterface(String packageName, String className) {
-    return ClassBuilder.createInterface(packageName, className);
+  public static String createJavaInterface(boolean isKotlin, String packageName, String className) {
+    if (isKotlin) {
+      return KotlinClassBuilder.createInterface(packageName, className);
+    }
+    return JavaClassBuilder.createInterface(packageName, className);
   }
 
-  public static String createJavaEnum(String packageName, String className) {
-    return ClassBuilder.createEnum(packageName, className);
+  public static String createJavaEnum(boolean isKotlin, String packageName, String className) {
+    if (isKotlin) {
+      return KotlinClassBuilder.createEnum(packageName, className);
+    }
+    return JavaClassBuilder.createEnum(packageName, className);
   }
 
-  public static String createActivity(String packageName, String className) {
-    return ClassBuilder.createActivity(packageName, className);
+  public static String createJavaActivity(boolean isKotlin, String packageName, String className) {
+    if (isKotlin) {
+      return KotlinClassBuilder.createActivity(packageName, className);
+    }
+    return JavaClassBuilder.createActivity(packageName, className);
   }
 }

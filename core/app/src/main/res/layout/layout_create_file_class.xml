@@ -1,12 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
   android:paddingTop="16dp"
   android:paddingBottom="16dp">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:orientation="horizontal">
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+      android:id="@+id/file_type_group"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:checkedButton="@id/type_java"
+      app:selectionRequired="true"
+      app:singleSelection="true">
+
+      <com.google.android.material.button.MaterialButton
+        android:id="@+id/type_java"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/idepref_editor_category_java"
+        app:icon="@drawable/ic_language_java" />
+
+      <com.google.android.material.button.MaterialButton
+        android:id="@+id/type_kotlin"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/idepref_editor_category_kotlin"
+        app:icon="@drawable/ic_language_kotlin" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+  </LinearLayout>
 
   <HorizontalScrollView
     android:layout_width="match_parent"
@@ -21,7 +58,7 @@
     android:scrollbars="none">
 
     <com.google.android.material.button.MaterialButtonToggleGroup
-      android:id="@+id/typeGroup"
+      android:id="@+id/class_type_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:checkedButton="@id/type_class"

@@ -26,25 +26,10 @@ import com.squareup.javapoet.TypeSpec
 import jdkx.lang.model.element.Modifier.PROTECTED
 import jdkx.lang.model.element.Modifier.PUBLIC
 
-object ClassBuilder {
+object JavaClassBuilder {
   @JvmStatic
   fun createClass(packageName: String, className: String): String {
     return toJavaFile(packageName, newClassSpec(className)).toString()
-  }
-
-  private fun toJavaFile(
-    packageName: String,
-    type: TypeSpec,
-    block: JavaFile.Builder.() -> Unit = {}
-  ): JavaFile {
-    return JavaFile.builder(packageName, type)
-      .indent(indentationString)
-      .apply { block(this) }
-      .build()
-  }
-
-  private fun newClassSpec(className: String): TypeSpec {
-    return TypeSpec.classBuilder(className).addModifiers(PUBLIC).build()
   }
 
   @JvmStatic
@@ -52,20 +37,9 @@ object ClassBuilder {
     return toJavaFile(packageName, newInterfaceSpec(className)).toString()
   }
 
-  private fun newInterfaceSpec(className: String): TypeSpec {
-    return TypeSpec.interfaceBuilder(className).addModifiers(PUBLIC).build()
-  }
-
   @JvmStatic
   fun createEnum(packageName: String, className: String): String {
     return toJavaFile(packageName, newEnumSpec(className)).toString()
-  }
-
-  private fun newEnumSpec(className: String): TypeSpec {
-    return TypeSpec.enumBuilder(className)
-      .addModifiers(PUBLIC)
-      .addEnumConstant("ENUM_DECLARED")
-      .build()
   }
 
   @JvmStatic
@@ -82,6 +56,35 @@ object ClassBuilder {
         .toBuilder()
         .superclass(AppCompatActivity::class.java)
         .addMethod(onCreate)
-    return toJavaFile(packageName, activity.build()) { skipJavaLangImports(true) }.toString()
+    return toJavaFile(packageName, activity.build()) {
+        skipJavaLangImports(true)
+      }
+      .toString()
+  }
+
+  private fun toJavaFile(
+    packageName: String,
+    type: TypeSpec,
+    block: JavaFile.Builder.() -> Unit = {},
+  ): JavaFile {
+    return JavaFile.builder(packageName, type)
+      .indent(indentationString)
+      .apply { block(this) }
+      .build()
+  }
+
+  private fun newClassSpec(className: String): TypeSpec {
+    return TypeSpec.classBuilder(className).addModifiers(PUBLIC).build()
+  }
+
+  private fun newInterfaceSpec(className: String): TypeSpec {
+    return TypeSpec.interfaceBuilder(className).addModifiers(PUBLIC).build()
+  }
+
+  private fun newEnumSpec(className: String): TypeSpec {
+    return TypeSpec.enumBuilder(className)
+      .addModifiers(PUBLIC)
+      .addEnumConstant("ENUM_DECLARED")
+      .build()
   }
 }
