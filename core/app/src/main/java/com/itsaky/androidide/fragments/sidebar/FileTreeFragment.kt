@@ -169,8 +169,8 @@ class FileTreeFragment : BottomSheetDialogFragment(), TreeNodeClickListener,
   }
 
   private fun listFilesForNode(files: Array<File>, parent: TreeNode) {
-    Arrays.sort(files, SortFileName())
-    Arrays.sort(files, SortFolder())
+    Arrays.sort(files, SORT_FILE_NAME)
+    Arrays.sort(files, SORT_FOLDER)
     for (file in files) {
       val node = TreeNode(file)
       node.viewHolder = FileTreeViewHolder(context)
@@ -278,6 +278,9 @@ class FileTreeFragment : BottomSheetDialogFragment(), TreeNodeClickListener,
   }
 
   companion object {
+  
+    private val SORT_FILE_NAME = SortFileName()
+    private val SORT_FOLDER = SortFolder()
 
     // Should be same as defined in layout/activity_editor.xml
     const val TAG = "editor.fileTree"

@@ -18,6 +18,9 @@ import java.util.List;
 /** Created by Bogdan Melnychuk on 2/10/15. */
 public class TreeNode {
 
+  private static final SortFileName SORT_FILE_NAME = new SortFileName();
+  private static final SortFolder SORT_FOLDER = new SortFolder();
+
   public static final String NODES_ID_SEPARATOR = ":";
   private final List<TreeNode> children;
   private int mId;
@@ -63,8 +66,8 @@ public class TreeNode {
     children.add(childNode);
 
     if (sort) {
-      Collections.sort(children, new SortFileName());
-      Collections.sort(children, new SortFolder());
+      Collections.sort(children, SORT_FILE_NAME);
+      Collections.sort(children, SORT_FOLDER);
     }
     return this;
   }
