@@ -302,14 +302,14 @@ public class TreeNode {
     }
   }
 
-  public class SortFileName implements Comparator<TreeNode> {
+  public static class SortFileName implements Comparator<TreeNode> {
     @Override
     public int compare(TreeNode f1, TreeNode f2) {
       return f1.getValue().getName().compareTo(f2.getValue().getName());
     }
   }
 
-  public class SortFolder implements Comparator<TreeNode> {
+  public static class SortFolder implements Comparator<TreeNode> {
     @Override
     public int compare(TreeNode p1, TreeNode p2) {
       File f1 = p1.getValue();
