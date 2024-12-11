@@ -364,7 +364,7 @@ inline fun <T : Enum<*>> enumParameter(crossinline block: EnumParameterBuilder<T
 inline fun projectNameParameter(crossinline configure: StringParameterBuilder.() -> Unit = {}) =
   stringParameter {
     name = string.project_app_name
-    default = "My Application"
+    default = "MyApplication"
     startIcon = { R.drawable.ic_android }
     constraints = listOf(NONEMPTY)
 
@@ -398,7 +398,7 @@ inline fun projectLanguageParameter(
 inline fun minSdkParameter(crossinline configure: EnumParameterBuilder<Sdk>.() -> Unit = {}) =
   enumParameter<Sdk> {
     name = string.minimum_sdk
-    default = Sdk.Lollipop
+    default = Sdk.Naughat
     displayName = Sdk::displayName
     startIcon = { R.drawable.ic_min_sdk }
 
