@@ -44,7 +44,7 @@ class ApkInstallationSessionCallback(
   }
 
   override fun onProgressChanged(sessionId: Int, progress: Float) {
-    if (activity.editorViewModel.isBuildInProgress) {
+    if (activity?.editorViewModel?.isBuildInProgress ?: true) {
       // Build in progress does not update bottom sheet action.
       return
     }
