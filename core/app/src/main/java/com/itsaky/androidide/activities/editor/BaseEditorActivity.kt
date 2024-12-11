@@ -280,12 +280,14 @@ abstract class BaseEditorActivity :
 
   override fun onApplyWindowInsets(insets: WindowInsetsCompat) {
     super.onApplyWindowInsets(insets)
-    val height = _binding?.swipeReveal?.height ?: return
+
     val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
-    _binding?.content?.bottomSheet?.setImeVisible(imeInsets.bottom > 0)
-    _binding?.contentCard?.updateLayoutParams<ViewGroup.LayoutParams> {
-      this.height = height - imeInsets.bottom
+    this._binding?.apply {
+      content.bottomSheet.setImeVisible(imeInsets.bottom > 0)
+      contentCard.updateLayoutParams<ViewGroup.LayoutParams> {
+        this.height = swipeReveal.height - imeInsets.bottom
+      }
     }
 
     val isImeVisible = imeInsets.bottom > 0
@@ -301,6 +303,10 @@ abstract class BaseEditorActivity :
       drawerSidebar
         .getFragment<EditorSidebarFragment>()
         .onApplyWindowInsets(insets)
+
+      contentCard.updateLayoutParams<ViewGroup.LayoutParams> {
+        this.height = swipeReveal.height
+      }
 
       content.apply {
         editorAppBarLayout.updatePadding(top = insets.top)
@@ -869,7 +875,7 @@ abstract class BaseEditorActivity :
           IntentUtils.launchApp(this, packageName)
           it.dismiss()
         }
-        .negativeActionText(string.cancel)
+        .negativeActionText(string.no)
         .negativeActionTapListener(Flashbar::dismiss)
         .build()
     this.tempFlashbar?.showOnUiThread()

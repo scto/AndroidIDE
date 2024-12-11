@@ -25,6 +25,7 @@ import android.widget.CheckBox
 import androidx.activity.viewModels
 import androidx.annotation.GravityInt
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ThreadUtils
 import com.itsaky.androidide.R
