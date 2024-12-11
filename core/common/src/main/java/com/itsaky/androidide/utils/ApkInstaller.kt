@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageInstaller.Session
 import android.content.pm.PackageInstaller.SessionCallback
+import android.content.pm.PackageInstaller.SessionParams
 import android.text.TextUtils
 import androidx.core.content.FileProvider
 import java.io.File
