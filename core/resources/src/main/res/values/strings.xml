@@ -39,6 +39,7 @@
   <string name="msg_no_references">No references found</string>
   <string name="view_diags">Diagnostics</string>
   <string name="title_installation_failed">Installation failed</string>
+  <string name="title_installation_success">Installation success</string>
   <string name="msg_picked_isnt_dir">Picked file is not a directory!</string>
   <string name="please_wait">Please wait for a moment …</string>
 

@@ -23,13 +23,15 @@ import com.itsaky.androidide.ui.EditorBottomSheet
 import org.slf4j.LoggerFactory
 
 /** @author Akash Yadav */
-class ApkInstallationSessionCallback(private var activity: BaseEditorActivity?) :
-  SingleSessionCallback() {
+class ApkInstallationSessionCallback(
+  private var activity: BaseEditorActivity?
+) : SingleSessionCallback() {
 
   private var sessionId = -1
 
   companion object {
-    private val log = LoggerFactory.getLogger(ApkInstallationSessionCallback::class.java)
+    private val log =
+      LoggerFactory.getLogger(ApkInstallationSessionCallback::class.java)
   }
 
   override fun onCreated(sessionId: Int) {
@@ -38,21 +40,37 @@ class ApkInstallationSessionCallback(private var activity: BaseEditorActivity?) 
     activity?._binding?.content?.apply {
       bottomSheet.setActionText(activity!!.getString(string.msg_installing_apk))
       bottomSheet.setActionProgress(0)
-      bottomSheet.showChild(EditorBottomSheet.CHILD_ACTION)
     }
   }
 
   override fun onProgressChanged(sessionId: Int, progress: Float) {
-    activity?._binding?.content?.bottomSheet?.setActionProgress((progress * 100f).toInt())
+    if (activity.editorViewModel.isBuildInProgress) {
+      // Build in progress does not update bottom sheet action.
+      return
+    }
+    activity?._binding?.content?.apply {
+      // If the visible child is the SymbolInput the keyboard is visible so it
+      // is better not to show the action child.
+      if (
+        bottomSheet.showingChild() != EditorBottomSheet.CHILD_SYMBOL_INPUT &&
+          bottomSheet.showingChild() != EditorBottomSheet.CHILD_ACTION
+      ) {
+        bottomSheet.showChild(EditorBottomSheet.CHILD_ACTION)
+      }
+      bottomSheet.setActionProgress((progress * 100f).toInt())
+    }
   }
 
   override fun onFinished(sessionId: Int, success: Boolean) {
     activity?._binding?.content?.apply {
-      bottomSheet.showChild(EditorBottomSheet.CHILD_HEADER)
-      bottomSheet.setActionProgress(0)
-      if (!success) {
-        activity?.flashError(string.title_installation_failed)
+      if (bottomSheet.showingChild() == EditorBottomSheet.CHILD_ACTION) {
+        bottomSheet.showChild(EditorBottomSheet.CHILD_HEADER)
       }
+      bottomSheet.setActionProgress(0)
+
+      if (success) {
+        activity?.flashSuccess(string.title_installation_success)
+      } else activity?.flashError(string.title_installation_failed)
 
       activity?.let {
         it.installationCallback?.destroy()
@@ -64,12 +82,17 @@ class ApkInstallationSessionCallback(private var activity: BaseEditorActivity?) 
   fun destroy() {
     if (this.sessionId != -1) {
       this.activity?.packageManager?.packageInstaller?.let { packageInstaller ->
-        packageInstaller.mySessions.find { session -> session.sessionId == this.sessionId }
+        packageInstaller.mySessions
+          .find { session -> session.sessionId == this.sessionId }
           ?.also { info ->
             try {
               packageInstaller.abandonSession(info.sessionId)
             } catch (ex: Exception) {
-              log.error("Failed to abandon session {} : {}", info.sessionId, ex.cause?.message ?: ex.message)
+              log.error(
+                "Failed to abandon session {} : {}",
+                info.sessionId,
+                ex.cause?.message ?: ex.message,
+              )
             }
           }
       }

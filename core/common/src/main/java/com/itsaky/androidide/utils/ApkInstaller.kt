@@ -21,15 +21,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
-import android.content.pm.PackageInstaller
 import android.content.pm.PackageInstaller.Session
 import android.content.pm.PackageInstaller.SessionCallback
 import android.text.TextUtils
 import androidx.core.content.FileProvider
-import com.itsaky.androidide.tasks.executeAsync
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 
 /**
  * Utility class for installing APKs.
@@ -45,12 +47,17 @@ object ApkInstaller {
    * Starts a session-based package installation workflow.
    *
    * @param context The context.
-   * @param sender The componenent which is requesting the installation. This component receives the
-   *   installation result.
+   * @param sender The componenent which is requesting the installation. This
+   *   component receives the installation result.
    * @param apk The APK file to install.
    */
   @JvmStatic
-  fun installApk(context: Context, sender: IntentSender, apk: File, callback: SessionCallback) {
+  fun installApk(
+    context: Context,
+    sender: IntentSender,
+    apk: File,
+    callback: SessionCallback,
+  ) {
     if (!apk.exists() || !apk.isFile || apk.extension != "apk") {
       log.error("File is not an APK: {}", apk)
       return
@@ -63,11 +70,13 @@ object ApkInstaller {
         "Cannot use session-based installer on this device. Falling back to intent-based installer."
       )
 
-      @Suppress("DEPRECATION") val intent = Intent(Intent.ACTION_INSTALL_PACKAGE)
+      @Suppress("DEPRECATION")
+      val intent = Intent(Intent.ACTION_INSTALL_PACKAGE)
       val authority = "${context.packageName}.providers.fileprovider"
       val uri = FileProvider.getUriForFile(context, authority, apk)
       intent.setDataAndType(uri, "application/vnd.android.package-archive")
-      intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+      intent.flags =
+        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
 
       try {
         context.startActivity(intent)
@@ -78,21 +87,24 @@ object ApkInstaller {
       return
     }
 
+    log.info("Starting a new session for installation")
+
     var session: Session? = null
     try {
       val installer =
-        context.packageManager.packageInstaller.apply { registerSessionCallback(callback) }
-      val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL)
+        context.packageManager.packageInstaller.apply {
+          registerSessionCallback(callback)
+        }
+
+      val params = SessionParams(SessionParams.MODE_FULL_INSTALL)
       val sessionId = installer.createSession(params)
       session = installer.openSession(sessionId)
-      executeAsync(
-        callable = {
-          addToSession(session, apk)
-          session
-        }
-      ) {
-        it?.let {
-          it.commit(sender)
+
+      CoroutineScope(Dispatchers.IO).launch {
+        addToSession(session, apk)
+
+        withContext(Dispatchers.Main) {
+          session.commit(sender)
           log.info("Started package install session")
         }
       }

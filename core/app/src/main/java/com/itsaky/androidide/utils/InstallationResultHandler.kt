@@ -33,26 +33,32 @@ import org.slf4j.LoggerFactory
 object InstallationResultHandler {
 
   private const val INSTALL_PACKAGE_REQ_CODE = 2304
-  private const val INSTALL_PACKAGE_ACTION = "com.itsaky.androidide.installer.INSTALL_PACKAGE"
+  private const val INSTALL_PACKAGE_ACTION =
+    "com.itsaky.androidide.installer.INSTALL_PACKAGE"
 
-  private val log = LoggerFactory.getLogger(InstallationResultHandler::class.java)
+  private val log =
+    LoggerFactory.getLogger(InstallationResultHandler::class.java)
 
   @JvmStatic
   fun createEditorActivitySender(context: Context): IntentSender {
-    val intent = Intent(context, InstallationResultReceiver::class.java)
-    intent.action = INSTALL_PACKAGE_ACTION
     return PendingIntent.getBroadcast(
-      context,
-      INSTALL_PACKAGE_REQ_CODE,
-      intent,
-      PendingIntent.FLAG_UPDATE_CURRENT
-    )
+        context,
+        INSTALL_PACKAGE_REQ_CODE,
+        Intent(context, InstallationResultReceiver::class.java).apply {
+          action = INSTALL_PACKAGE_ACTION
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT,
+      )
       .intentSender
   }
 
   @JvmStatic
   fun onResult(context: Context?, intent: Intent?): String? {
-    if (context == null || intent == null || intent.action != INSTALL_PACKAGE_ACTION) {
+    if (
+      context == null ||
+        intent == null ||
+        intent.action != INSTALL_PACKAGE_ACTION
+    ) {
       log.warn("Invalid broadcast received. action={}", intent?.action)
       return null
     }
@@ -72,10 +78,19 @@ object InstallationResultHandler {
         @Suppress("DEPRECATION")
         extras.get(Intent.EXTRA_INTENT)?.let {
           if (it is Intent) {
-            if ((it.flags and Intent.FLAG_ACTIVITY_NEW_TASK) != Intent.FLAG_ACTIVITY_NEW_TASK) {
+            if (
+              (it.flags and Intent.FLAG_ACTIVITY_NEW_TASK) !=
+                Intent.FLAG_ACTIVITY_NEW_TASK
+            ) {
               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(it)
+          } else {
+            log.error(
+              "Package not installed invalid intent. status: {}, message: {}",
+              status,
+              message,
+            )
           }
         }
         null
@@ -93,7 +108,11 @@ object InstallationResultHandler {
       PackageInstaller.STATUS_FAILURE_INCOMPATIBLE,
       PackageInstaller.STATUS_FAILURE_INVALID,
       PackageInstaller.STATUS_FAILURE_STORAGE -> {
-        log.error("Package installation failed with status code {} and message {}", status, message)
+        log.error(
+          "Package installation failed with status code {} and message {}",
+          status,
+          message,
+        )
         null
       }
 

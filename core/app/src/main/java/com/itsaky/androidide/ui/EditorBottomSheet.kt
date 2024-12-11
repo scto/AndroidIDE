@@ -257,6 +257,10 @@ constructor(
     }
   }
 
+  fun showingChild(): Int {
+    return binding.headerContainer.displayedChild
+  }
+
   fun showChild(index: Int) {
     binding.headerContainer.displayedChild = index
   }
