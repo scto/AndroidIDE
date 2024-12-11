@@ -28,16 +28,18 @@
       <com.google.android.material.button.MaterialButton
         android:id="@+id/type_java"
         style="?attr/materialButtonOutlinedStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="@string/idepref_editor_category_java"
         app:icon="@drawable/ic_language_java" />
 
       <com.google.android.material.button.MaterialButton
         android:id="@+id/type_kotlin"
         style="?attr/materialButtonOutlinedStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="@string/idepref_editor_category_kotlin"
         app:icon="@drawable/ic_language_kotlin" />
 

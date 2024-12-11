@@ -212,11 +212,13 @@ class NewFileAction(context: Context, override val order: Int) :
     val fileTypeId: Int = binding.fileTypeGroup.checkedButtonId
     val classTypeId: Int = binding.classTypeGroup.checkedButtonId
 
+    val isKotlin = fileTypeId == binding.typeKotlin.id
+
     val created =
       doCreateClassFile(
         binding,
         file,
-        fileTypeId == binding.typeKotlin.id,
+        isKotlin,
         classTypeId,
         name,
         pkgName,
@@ -225,7 +227,7 @@ class NewFileAction(context: Context, override val order: Int) :
 
     if (created && autoLayout) {
       val packagePath = pkgName.toString().replace(".", "/")
-      createAutoLayout(context, file, name, packagePath)
+      createAutoLayout(context, isKotlin, file, name, packagePath)
     }
   }
 
@@ -304,13 +306,20 @@ class NewFileAction(context: Context, override val order: Int) :
 
   private fun createAutoLayout(
     context: Context,
+    isKotlin: Boolean,
     directory: File,
     fileName: String,
     packagePath: String,
   ) {
-    val dir = directory.toString().replace("java/$packagePath", "res/layout/")
+    val dir =
+      directory.absolutePath.replaceFirst(
+        Regex("java|kotlin/($packagePath)?"),
+        "res/layout/",
+      )
     val layoutName =
-      ProjectWriter.createLayoutName(fileName.replace(".java", ".xml"))
+      ProjectWriter.createLayoutName(
+        fileName.replace(if (isKotlin) ".kt" else ".java", ".xml")
+      )
     val newFileLayout = File(dir, layoutName)
     if (newFileLayout.exists()) {
       flashError(R.string.msg_layout_file_exists)
