@@ -111,14 +111,14 @@ object ApkInstaller {
       }
     } catch (io: IOException) {
       session?.abandon()
-      log.error("Package installation failed. {}", io)
+      log.error("Package installation failed", io)
     } catch (runtime: RuntimeException) {
       session?.abandon()
-      log.error("Package installation failed. {}", runtime)
+      log.error("Package installation failed", runtime)
     }
   }
 
-  private fun addToSession(session: Session, apk: File) {
+  private suspend fun addToSession(session: Session, apk: File) {
     val length = apk.length()
     if (length == 0L) {
       throw RuntimeException("File is empty (has length 0)")
