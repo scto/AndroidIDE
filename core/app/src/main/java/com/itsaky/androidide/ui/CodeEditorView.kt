@@ -411,7 +411,7 @@ class CodeEditorView(
   }
 
   private fun onCursorAnimationPrefChanged() {
-    binding.editor.cursorAnimationEnabled = EditorPreferences.cursorAnimationEnabled
+    binding.editor.setCursorAnimationEnabled(EditorPreferences.cursorAnimationEnabled)
   }
 
   private fun onStickyScrollEnabeldPrefChanged() {
