@@ -198,7 +198,7 @@ open class EditorActionsMenu(val editor: IDEEditor) :
     val drawable = GradientDrawable()
     drawable.shape = GradientDrawable.RECTANGLE
     drawable.cornerRadius = SizeUtils.dp2px(28f).toFloat() // Recommeneded size is 28dp
-    drawable.color = editor.context.resolveAttr(R.attr.colorSurface)
+    drawable.setColor(editor.context.resolveAttr(R.attr.colorSurface))
     drawable.setStroke(SizeUtils.dp2px(1f), editor.context.resolveAttr(R.attr.colorOutline))
     list.background = drawable
   }
