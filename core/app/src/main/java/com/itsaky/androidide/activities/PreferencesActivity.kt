@@ -24,8 +24,8 @@ import com.itsaky.androidide.R
 import com.itsaky.androidide.app.EdgeToEdgeIDEActivity
 import com.itsaky.androidide.databinding.ActivityPreferencesBinding
 import com.itsaky.androidide.fragments.IDEPreferencesFragment
-import com.itsaky.androidide.preferences.addRootPreferences
 import com.itsaky.androidide.preferences.IDEPreferences as prefs
+import com.itsaky.androidide.preferences.addRootPreferences
 
 class PreferencesActivity : EdgeToEdgeIDEActivity() {
 
@@ -33,8 +33,12 @@ class PreferencesActivity : EdgeToEdgeIDEActivity() {
   private val binding: ActivityPreferencesBinding
     get() = checkNotNull(_binding) { "Activity has been destroyed" }
 
-  private val rootFragment by lazy {
-    IDEPreferencesFragment()
+  private val rootFragment by lazy { IDEPreferencesFragment() }
+
+  override fun bindLayout(): View {
+    return ActivityPreferencesBinding.inflate(layoutInflater)
+      .also { _binding = it }
+      .root
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +48,9 @@ class PreferencesActivity : EdgeToEdgeIDEActivity() {
     supportActionBar!!.setTitle(R.string.ide_preferences)
     supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    binding.toolbar.setNavigationOnClickListener {
+      onBackPressedDispatcher.onBackPressed()
+    }
 
     if (savedInstanceState != null) {
       return
@@ -57,7 +63,7 @@ class PreferencesActivity : EdgeToEdgeIDEActivity() {
     val args = Bundle()
     args.putParcelableArrayList(
       IDEPreferencesFragment.EXTRA_CHILDREN,
-      ArrayList(prefs.children)
+      ArrayList(prefs.children),
     )
 
     rootFragment.arguments = args
@@ -65,28 +71,21 @@ class PreferencesActivity : EdgeToEdgeIDEActivity() {
   }
 
   override fun onApplySystemBarInsets(insets: Insets) {
-    val toolbar: View = binding.toolbar
-    toolbar.setPadding(
-      toolbar.paddingLeft + insets.left,
-      toolbar.paddingTop,
-      toolbar.paddingRight + insets.right,
-      toolbar.paddingBottom
-    )
+    _binding?.apply {
+      toolbar.setPadding(
+        toolbar.paddingLeft + insets.left,
+        toolbar.paddingTop,
+        toolbar.paddingRight + insets.right,
+        toolbar.paddingBottom,
+      )
 
-    val fragmentContainer: View = binding.fragmentContainerParent
-    fragmentContainer.setPadding(
-      fragmentContainer.paddingLeft + insets.left,
-      fragmentContainer.paddingTop,
-      fragmentContainer.paddingRight + insets.right,
-      fragmentContainer.paddingBottom
-    )
-  }
-
-  override fun bindLayout(): View {
-    _binding = ActivityPreferencesBinding.inflate(
-      layoutInflater
-    )
-    return binding.root
+      fragmentContainer.setPadding(
+        fragmentContainer.paddingLeft + insets.left,
+        fragmentContainer.paddingTop,
+        fragmentContainer.paddingRight + insets.right,
+        fragmentContainer.paddingBottom,
+      )
+    }
   }
 
   private fun loadFragment(fragment: Fragment) {
