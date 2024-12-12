@@ -37,10 +37,6 @@ class ApkInstallationSessionCallback(
   override fun onCreated(sessionId: Int) {
     this.sessionId = sessionId
     log.debug("Created package installation session: {}", sessionId)
-    activity?._binding?.content?.apply {
-      bottomSheet.setActionText(activity!!.getString(string.msg_installing_apk))
-      bottomSheet.setActionProgress(0)
-    }
   }
 
   override fun onProgressChanged(sessionId: Int, progress: Float) {
@@ -48,6 +44,7 @@ class ApkInstallationSessionCallback(
       // Build in progress does not update bottom sheet action.
       return
     }
+
     activity?._binding?.content?.apply {
       // If the visible child is the SymbolInput the keyboard is visible so it
       // is better not to show the action child.
@@ -55,6 +52,9 @@ class ApkInstallationSessionCallback(
         bottomSheet.showingChild() != EditorBottomSheet.CHILD_SYMBOL_INPUT &&
           bottomSheet.showingChild() != EditorBottomSheet.CHILD_ACTION
       ) {
+        bottomSheet.setActionText(
+          activity!!.getString(string.msg_installing_apk)
+        )
         bottomSheet.showChild(EditorBottomSheet.CHILD_ACTION)
       }
       bottomSheet.setActionProgress((progress * 100f).toInt())
@@ -68,11 +68,9 @@ class ApkInstallationSessionCallback(
       }
       bottomSheet.setActionProgress(0)
 
-      if (success) {
-        activity?.flashSuccess(string.title_installation_success)
-      } else activity?.flashError(string.title_installation_failed)
-
       activity?.let {
+        if (!success) flashError(string.title_installation_failed)
+
         it.installationCallback?.destroy()
         it.installationCallback = null
       }
