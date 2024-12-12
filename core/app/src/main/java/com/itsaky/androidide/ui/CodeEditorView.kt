@@ -341,6 +341,7 @@ class CodeEditorView(
     onUseIcuPrefChanged()
     onDeleteEmptyLinesPrefChanged()
     onDeleteTabsPrefChanged()
+    onCursorAnimationPrefChanged()
     onStickyScrollEnabeldPrefChanged()
     onPinLineNumbersPrefChanged()
   }
@@ -409,6 +410,10 @@ class CodeEditorView(
     binding.editor.props.deleteMultiSpaces = if (EditorPreferences.deleteTabsOnBackspace) -1 else 1
   }
 
+  private fun onCursorAnimationPrefChanged() {
+    binding.editor.cursorAnimationEnabled = EditorPreferences.cursorAnimationEnabled
+  }
+
   private fun onStickyScrollEnabeldPrefChanged() {
     binding.editor.props.stickyScroll = EditorPreferences.stickyScrollEnabled
   }
@@ -460,6 +465,7 @@ class CodeEditorView(
       EditorPreferences.USE_MAGNIFER -> onMagnifierPrefChanged()
       EditorPreferences.USE_ICU -> onUseIcuPrefChanged()
       EditorPreferences.USE_CUSTOM_FONT -> onCustomFontPrefChanged()
+      EditorPreferences.CURSOR_ANIMATION_ENABLED -> onCursorAnimationPrefChanged()
       EditorPreferences.DELETE_EMPTY_LINES -> onDeleteEmptyLinesPrefChanged()
       EditorPreferences.DELETE_TABS_ON_BACKSPACE -> onDeleteTabsPrefChanged()
       EditorPreferences.STICKY_SCROLL_ENABLED -> onStickyScrollEnabeldPrefChanged()

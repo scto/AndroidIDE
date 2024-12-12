@@ -258,6 +258,8 @@
   <string name="msg_swipe_for_output">Swipe up for @@build output@@.</string>
   <string name="idepref_editor_useSoftTabs_title">Use soft tab</string>
   <string name="idepref_editor_useSoftTabs_summary">Choose whether to use spaces instead of tab character (\\t).</string>
+  <string name="idepref_editor_cursorAnimationEnabled_title">Enable cursor animation</string>
+  <string name="idepref_editor_cursorAnimationEnabled_summary">Choose whether to use animation when moving the cursor.</string>
   <string name="btn_donate">Donate</string>
   <string name="btn_docs">Documentation</string>
   <string name="btn_close">Close</string>

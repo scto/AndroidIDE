@@ -42,6 +42,7 @@ import com.itsaky.androidide.preferences.internal.EditorPreferences.USE_CUSTOM_F
 import com.itsaky.androidide.preferences.internal.EditorPreferences.USE_ICU
 import com.itsaky.androidide.preferences.internal.EditorPreferences.USE_MAGNIFER
 import com.itsaky.androidide.preferences.internal.EditorPreferences.USE_SOFT_TAB
+import com.itsaky.androidide.preferences.internal.EditorPreferences.CURSOR_ANIMATION_ENABLED
 import com.itsaky.androidide.preferences.internal.EditorPreferences.WORD_WRAP
 import com.itsaky.androidide.resources.R.drawable
 import com.itsaky.androidide.resources.R.string
@@ -86,6 +87,7 @@ private class CommonConfigurations(
     addPreference(VisibiblePasswordFlag())
     addPreference(DeleteEmptyLines())
     addPreference(DeleteTabs())
+    addPreference(CursorAnimationEnabled())
     addPreference(StickyScrollEnabled())
     addPreference(PinLineNumbersEnabled())
     addPreference(CompletionsMatchLower())
@@ -146,6 +148,16 @@ private class UseSoftTab(
   override val icon: Int? = drawable.ic_space,
 ) : SwitchPreference(setValue = EditorPreferences::useSoftTab::set,
   getValue = EditorPreferences::useSoftTab::get)
+
+@Parcelize
+private class CursorAnimationEnabled(
+  override val key: String = CURSOR_ANIMATION_ENABLED,
+  override val title: Int = string.idepref_editor_cursorAnimationEnabled_title,
+  override val summary: Int? = string.idepref_editor_cursorAnimationEnabled_summary,
+  override val icon: Int? = drawable.ic_space, // TODO: Add a icon 
+) : SwitchPreference(setValue = EditorPreferences::cursorAnimationEnabled::set,
+  getValue = EditorPreferences::cursorAnimationEnabled::get)
+
 
 @Parcelize
 private class TabSize(

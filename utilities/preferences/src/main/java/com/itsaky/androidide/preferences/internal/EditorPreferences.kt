@@ -43,6 +43,7 @@ object EditorPreferences {
   const val USE_ICU = "idepref_editor_useIcu"
   const val USE_SOFT_TAB = "idepref_editor_useSoftTab"
   const val USE_CUSTOM_FONT = "idepref_editor_useCustomFont"
+  const val CURSOR_ANIMATION_ENABLED = "idepref_editor_cursorAnimationEnabled"
   const val DELETE_EMPTY_LINES = "idepref_editor_deleteEmptyLines"
   const val DELETE_TABS_ON_BACKSPACE = "idepref_editor_deleteTab"
   const val STICKY_SCROLL_ENABLED = "idepref_editor_stickyScrollEnabled"
@@ -145,6 +146,12 @@ object EditorPreferences {
     get() = prefManager.getBoolean(USE_CUSTOM_FONT, false)
     set(value) {
       prefManager.putBoolean(USE_CUSTOM_FONT, value)
+    }
+
+  var cursorAnimationEnabled: Boolean
+    get() = prefManager.getBoolean(CURSOR_ANIMATION_ENABLED, false)
+    set(value) {
+      prefManager.putBoolean(CURSOR_ANIMATION_ENABLED, value)
     }
 
   var colorScheme: String
