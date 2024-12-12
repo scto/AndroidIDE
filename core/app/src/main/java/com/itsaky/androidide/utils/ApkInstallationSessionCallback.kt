@@ -69,7 +69,7 @@ class ApkInstallationSessionCallback(
       bottomSheet.setActionProgress(0)
 
       activity?.let {
-        if (!success) flashError(string.title_installation_failed)
+        if (!success) it.flashError(string.title_installation_failed)
 
         it.installationCallback?.destroy()
         it.installationCallback = null
