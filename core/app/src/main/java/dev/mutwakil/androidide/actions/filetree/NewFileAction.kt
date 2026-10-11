@@ -81,8 +81,8 @@ class NewFileAction(
         const val LAYOUT_RES_PATH_REGEX = "/.*/src/.*/res/layout"
         const val MENU_RES_PATH_REGEX = "/.*/src/.*/res/menu"
         const val DRAWABLE_RES_PATH_REGEX = "/.*/src/.*/res/drawable"
-        const val JAVA_PATH_REGEX = "/.*/src/.*/java"
-        const val KOTLIN_PATH_REGEX = "/.*/src/.*/kotlin(?:/|$)"
+        const val JAVA_PATH_REGEX = "/.*/src/[^/]+/java(?:/|$)"
+        const val KOTLIN_PATH_REGEX = "/.*/src/[^/]+/kotlin(?:/|$)"
         const val CPP_PATH_REGEX = "/.*/src/[^/]+/cpp(/.*)?$"
         private const val MAX_FILE_NAME_LENGTH = 40
 
@@ -326,8 +326,7 @@ class NewFileAction(
         }
 
         if (autoLayout) {
-            val packagePath = pkgName.toString().replace(".", "/")
-            createAutoLayout(context, sourceFileDirectory, name, packagePath, isKotlin)
+            createAutoLayout(context, sourceFileDirectory, name, isKotlin)
         }
     }
 
@@ -485,10 +484,12 @@ class NewFileAction(
         context: Context,
         directory: File,
         fileName: String,
-        packagePath: String,
         isKotlin: Boolean = false,
     ) {
-        val dir = directory.toString().replace(Regex("(?:java|kotlin)/${Pattern.quote(packagePath)}"),"res/layout")
+        val dir =
+            Regex("^(.*?/src/[^/]+)/(?:java|kotlin)(?:/.*)?$").replace(directory.absolutePath) {
+                "${it.groupValues[1]}/res/layout"
+            }
         val sourceExtension = if (isKotlin) ".kt" else ".java"
         val layoutName = ProjectWriter.createLayoutName(fileName.replace(sourceExtension, ".xml"))
         val newFileLayout = File(dir, layoutName)
