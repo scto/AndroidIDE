@@ -53,6 +53,7 @@ import com.unnamed.b.atv.model.TreeNode.TreeNodeClickListener
 import com.unnamed.b.atv.model.TreeNode.TreeNodeLongClickListener
 import com.unnamed.b.atv.view.AndroidTreeView
 import dev.mutwakil.androidide.adapters.FileSearchAdapter
+import dev.mutwakil.androidide.events.CollapseTreeNodeRequestEvent
 import dev.mutwakil.androidide.events.ExpandTreeNodeRequestEvent
 import dev.mutwakil.androidide.events.ListProjectFilesRequestEvent
 import dev.mutwakil.androidide.resources.R
@@ -63,6 +64,7 @@ import dev.mutwakil.androidide.viewmodel.FileSearchViewModel
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.ThreadMode.MAIN
 import java.io.File
 import java.util.Arrays
@@ -253,14 +255,14 @@ class FileTreeFragment : BottomSheetDialogFragment(), TreeNodeClickListener,
     updateChevron(node)
   }
 
-  private fun collapseNode(node: TreeNode, animate: Boolean = true) {
+  private fun collapseNode(node: TreeNode, animate: Boolean = true,includeSubnodes: Boolean = false) {
     if (fileTreeView == null) {
       return
     }
     if (animate) {
       TransitionManager.beginDelayedTransition(binding!!.root, ChangeBounds())
     }
-    fileTreeView!!.collapseNode(node)
+    fileTreeView!!.collapseNode(node,includeSubnodes)
     updateChevron(node)
   }
 
@@ -326,6 +328,20 @@ class FileTreeFragment : BottomSheetDialogFragment(), TreeNodeClickListener,
       event.node
     }
     expandNode(event.node)
+  }
+
+  @Suppress("unused")
+  @Subscribe(threadMode = MAIN)
+  fun onGetCollapseTreeNodeRequest(event: CollapseTreeNodeRequestEvent){
+    if (!isVisible||context==null){
+      return
+    } else{
+      event.node
+    }
+    collapseNode(event.node,event.includeSubnodes)
+
+    setLoading(event.node)
+    listNode(event.node){ expandNode(event.node)}
   }
 
   fun listProjectFiles() {
