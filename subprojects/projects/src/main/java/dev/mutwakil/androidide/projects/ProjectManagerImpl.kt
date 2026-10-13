@@ -29,6 +29,7 @@ import dev.mutwakil.androidide.eventbus.events.file.FileRenameEvent
 import dev.mutwakil.androidide.eventbus.events.project.ProjectInitializedEvent
 import dev.mutwakil.androidide.app.BaseApplication
 import dev.mutwakil.androidide.lookup.Lookup
+import dev.mutwakil.androidide.memprof.Memprof 
 import dev.mutwakil.androidide.project.AndroidModels
 import dev.mutwakil.androidide.project.GradleModels
 import dev.mutwakil.androidide.projects.api.AndroidModule
@@ -76,17 +77,23 @@ class ProjectManagerImpl :
 	IProjectManager,
 	EventReceiver {
 	
+	private val indexingServiceManagerLock = Any()
 	private var _indexingServiceManager : IndexingServiceManager? = null 
 	
 	lateinit var projectPath: String
-
+	
+	/**
+	 * The indexing service manager of the current project session, created on first access after
+	 * construction or [destroy].
+	 *
+	 * Read from language-server worker threads as well as the main thread, so creation is guarded by
+	 * a lock: two racing first reads must not each create, and leak, a manager.
+	 */ 
 	val indexingServiceManager : IndexingServiceManager
-		get() {
-			if (_indexingServiceManager==null){
-				_indexingServiceManager = IndexingServiceManager()
+		get() =
+			synchronized(indexingServiceManagerLock) {
+				_indexingServiceManager ?: IndexingServiceManager().also { _indexingServiceManager = it }
 			}
-			return _indexingServiceManager!!
-		}
 
 	override var gradleBuild: GradleModels.GradleBuild? = null
 	override var workspace: Workspace? = null
@@ -127,6 +134,7 @@ class ProjectManagerImpl :
 			)
 
 		val workspace = this.workspace!!
+		Memprof.mark("workspace_built")
 
 		// build variants must be updated before the sources and class paths are indexed
 		updateBuildVariants { buildVariants ->
@@ -144,56 +152,29 @@ class ProjectManagerImpl :
 		}
 
 		withStopWatch("Setup project") {
-			val indexerScope = CoroutineScope(Dispatchers.Default)
-			val modulesFlow =
-				flow {
-					workspace.subProjects.filterIsInstance<ModuleProject>().forEach {
-						emit(it)
-					}
-				}
-
-			val jobs =
-				modulesFlow.map { module ->
-					indexerScope.async {
-						module.indexSourcesAndClasspaths()
-						if (module is AndroidModule) {
-							module.readResources()
+			Memprof.phase("Index module classpaths and sources", "indexing_complete") {
+				val indexerScope = CoroutineScope(Dispatchers.Default)
+				val modulesFlow =
+					flow {
+						workspace.subProjects.filterIsInstance<ModuleProject>().forEach {
+							emit(it)
 						}
 					}
-				}
 
-			// wait for the indexing to finish
-			jobs.toList().awaitAll()
-		}
-		reportUnreadableClasspathJars(workspace)
-	}
+				val jobs =
+					modulesFlow.map { module ->
+						indexerScope.async {
+							module.indexSourcesAndClasspaths()
+							if (module is AndroidModule) {
+								module.readResources()
+							}
+						}
+					}
 
-	/**
-	 * Surface any classpath JARs that were corrupt/unreadable during indexing (e.g. a truncated
-	 * download or incomplete offline provisioning) to the user — naming the offending dependency and
-	 * offering a recovery path (re-sync) — instead of silently dropping its code-completion symbols.
-	 */
-	private fun reportUnreadableClasspathJars(workspace: Workspace) {
-		val names = workspace.subProjects
-			.filterIsInstance<ModuleProject>()
-			.flatMap { it.unreadableClasspathJars }
-			.map { it.name }
-			.distinct()
-		if (names.isEmpty()) {
-			return
-		}
-
-		log.warn("Skipped {} unreadable classpath JAR(s) during indexing: {}", names.size, names)
-
-		val context = BaseApplication.baseInstance
-		val shown = names.take(3).joinToString(", ")
-		val list =
-			if (names.size > 3) {
-				context.getString(R.string.msg_unreadable_classpath_jars_overflow, shown, names.size - 3)
-			} else {
-				shown
+				// wait for the indexing to finish
+				jobs.toList().awaitAll()
 			}
-		flashError(context.getString(R.string.msg_unreadable_classpath_jars, list))
+		}
 	}
 
 	override fun getAndroidModules(): List<AndroidModule> {
@@ -264,8 +245,12 @@ class ProjectManagerImpl :
 		this.workspace = null
 
 
-		this._indexingServiceManager?.close()
-		this._indexingServiceManager = null
+		// Closed outside the lock: close() blocks until every service has shut down, and a worker
+		// thread reading the manager meanwhile must not wait on that.
+		val indexingServiceManager =
+			synchronized(indexingServiceManagerLock) {
+				_indexingServiceManager.also { _indexingServiceManager = null }
+			}
 
 		(this.androidBuildVariants as? MutableMap?)?.clear()
 	}
@@ -472,4 +457,31 @@ class ProjectManagerImpl :
 			}
 		}
 	}
+}
+
+private val unreadableClasspathJarsLog = LoggerFactory.getLogger("UnreadableClasspathJars")
+
+/**
+ * Surfaces unreadable classpath JARs [names] to the user - naming the offending dependency and
+ * offering a recovery path (re-sync) - instead of silently dropping its code-completion symbols.
+ *
+ * Called once per indexing pass with the names of every JAR that pass could not open; a no-op for
+ * an empty list.
+ */
+fun reportUnreadableClasspathJars(names: List<String>) {
+	if (names.isEmpty()) {
+		return
+	}
+
+	unreadableClasspathJarsLog.warn("Skipped {} unreadable classpath JAR(s) during indexing: {}", names.size, names)
+
+	val context = BaseApplication.baseInstance
+	val shown = names.take(3).joinToString(", ")
+	val list =
+		if (names.size > 3) {
+			context.getString(R.string.msg_unreadable_classpath_jars_overflow, shown, names.size - 3)
+		} else {
+			shown
+		}
+	flashError(context.getString(R.string.msg_unreadable_classpath_jars, list))
 }
