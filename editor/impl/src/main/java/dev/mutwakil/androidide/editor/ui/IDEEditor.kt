@@ -451,6 +451,25 @@ open class IDEEditor @JvmOverloads constructor(
         if (_actionsMenu?.isShowing == true) {
             _actionsMenu?.dismiss()
         }
+        // Dismiss autocomplete window if showing
+        val completion = getComponent(EditorAutoCompletion::class.java)
+        if (completion.isShowing) {
+            completion.hide()
+        }
+    }
+    
+    fun dismissPopupWindows() {
+        if (_diagnosticWindow?.isShowing == true) {
+            _diagnosticWindow?.dismiss()
+        }
+
+        if (_signatureHelpWindow?.isShowing == true) {
+            _signatureHelpWindow?.dismiss()
+        }
+
+        if (_actionsMenu?.isShowing == true) {
+            _actionsMenu?.dismiss()
+        }
     }
 
     // not overridable!
