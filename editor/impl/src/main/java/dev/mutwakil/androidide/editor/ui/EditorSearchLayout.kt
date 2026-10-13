@@ -42,6 +42,8 @@ import java.util.regex.Pattern
 @SuppressLint("ViewConstructor") // Always created dynamically
 class EditorSearchLayout(context: Context, val editor: IDEEditor) : FrameLayout(context) {
 
+  var onSearchModeChanged: ((isActive: Boolean) -> Unit)? = null
+  
   private var searchInputTextWatcher: TextWatcher? = null
   private var searchOptions = SearchOptions(true, false)
   private val findInFileBinding: LayoutFindInFileBinding
@@ -104,6 +106,7 @@ class EditorSearchLayout(context: Context, val editor: IDEEditor) : FrameLayout(
       false
     }
     findInFileBinding.root.visibility = VISIBLE
+    onSearchModeChanged?.invoke(true)
   }
 
   private fun onSearchActionClick(v: View) {
@@ -116,6 +119,7 @@ class EditorSearchLayout(context: Context, val editor: IDEEditor) : FrameLayout(
       findInFileBinding.root.visibility = GONE
       this.searchInputTextWatcher = null
       searcher.onClose()
+      onSearchModeChanged?.invoke(false)
     }
     if (!searcher.hasQuery()) {
       return

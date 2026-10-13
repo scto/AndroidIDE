@@ -1049,6 +1049,10 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
             content.bottomSheet.onSoftInputChanged()
         }
     }
+    
+    fun setEditorSearchModeActive(isActive: Boolean) {
+		contentOrNull?.bottomSheet?.setSearchModeActive(isActive)
+	}
 
     private fun showNeedHelpDialog() {
         val builder = newMaterialDialogBuilder(this)
