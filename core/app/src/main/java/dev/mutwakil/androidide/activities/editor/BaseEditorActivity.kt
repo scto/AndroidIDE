@@ -169,6 +169,14 @@ abstract class BaseEditorActivity : EdgeToEdgeIDEActivity(), TabLayout.OnTabSele
         get() = true
 
     private lateinit var dependencyUpdater: DependencyUpdaterDialog
+    
+    protected val contentOrNull: ContentEditorBinding?
+		get() {
+			if (_binding == null || isDestroyed || isDestroying) {
+				return null
+			}
+			return _binding!!.content
+		}
 
     private val onBackPressedCallback: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
