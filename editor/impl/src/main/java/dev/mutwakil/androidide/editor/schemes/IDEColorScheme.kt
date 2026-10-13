@@ -48,9 +48,13 @@ class IDEColorScheme(internal val file: File, val key: String) : DynamicColorSch
     internal set
 
   private var colorId = endColorId
+  private var loaded = false
 
+  @Synchronized
   internal fun load() {
+    if (loaded) return
     SchemeParser { name -> File(this.file.parentFile, name) }.load(this)
+    loaded = true
   }
 
   fun getLanguageScheme(type: String): LanguageScheme? {
